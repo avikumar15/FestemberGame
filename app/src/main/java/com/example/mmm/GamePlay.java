@@ -8,13 +8,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
@@ -34,6 +37,12 @@ public class GamePlay extends View {
     private Bitmap startScreen, gameOverScreen, startScreenResized, gameOverScreenResized;
     private Game game;
 
+    public int maxFrames = 4;  // Increase this to make size of each background bitmap to reduce
+                               // ie. make it look like cropped and decrease to achieve the opposite.
+    private Drawable frameDrawable;
+    public float frameHeight;
+    private List<FrameRect> frameRects = new ArrayList<>();
+
     private final static String TAG = "GamePlay";
 
     public GamePlay(Context context, float width, float height) {
@@ -41,6 +50,13 @@ public class GamePlay extends View {
 
         this.width = width;
         this.height = height;
+
+        if (maxFrames > 0) {
+            frameHeight = height / (maxFrames - 1);
+        }
+        else{
+            frameHeight = height;
+        }
 
         obstaclePaint.setColor(getResources().getColor(R.color.colorAccent));
    //     brush.setColor(getResources().getColor(R.color.ball_color));
@@ -68,6 +84,11 @@ public class GamePlay extends View {
         gameOver = false;
         game = new Game(width, height);
         gameplayPath = new Path();
+
+        for (int i = maxFrames - 2; i >= 0; --i){
+            frameRects.add(new FrameRect(frameHeight * i, frameHeight * (i + 1), height));
+        }
+
         Log.d(TAG, "Started!");
         invalidate();
     }
@@ -105,6 +126,7 @@ public class GamePlay extends View {
         //    canvas.drawRect(0, 0, width, height, backgroundPaint);
 //            halfSideLength = getHeight() / 30f;
             //    canvas.drawPath(gameplayPath,brush);
+            drawFrameRect(canvas);
             canvas.drawCircle(fingerX, fingerY, 60, brush);
             drawObstacles(canvas);
 
@@ -129,25 +151,45 @@ public class GamePlay extends View {
                 RotatingObstacle rotatingObstacle = (RotatingObstacle) obstacle;
                 canvas.drawCircle(rotatingObstacle.getObstacleCx1(), rotatingObstacle.getObstacleCy1(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
                 canvas.drawCircle(rotatingObstacle.getObstacleCx2(), rotatingObstacle.getObstacleCy2(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
-                if (obstacle.isInside(fingerX, fingerY)){
-                    Log.d(TAG, "Game Over! Ball inside obstacle: " + rotatingObstacle);
-                    setGameOver();
-                    invalidate();
-                    break;
-                }
             }
             else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE)){
                 HorizontalObstacle horizontalObstacle = (HorizontalObstacle) obstacle;
                 canvas.drawRect(horizontalObstacle.getLeft(), horizontalObstacle.getTop(), horizontalObstacle.getRight(), horizontalObstacle.getBottom(), obstaclePaint);
-                if (obstacle.isInside(fingerX, fingerY)){
-                    Log.d(TAG, "Game Over! Ball inside obstacle: " + horizontalObstacle);
-                    setGameOver();
-                    invalidate();
-                    break;
-                }
+            }
+            if (obstacle.isInside(fingerX, fingerY)){
+                Log.d(TAG, "Game Over! Ball inside obstacle: " + obstacle);
+                setGameOver();
+                invalidate();
+                break;
             }
         }
         game.update();
+        invalidate();
+    }
+
+    private void drawFrameRect(Canvas canvas){
+        if (frameRects == null || frameRects.size() == 0){
+            return;
+        }
+        float frameTop = frameRects.get(frameRects.size() - 1).getTop();
+        if (frameTop > 0){
+            frameRects.add(new FrameRect(frameTop - frameHeight, frameTop, height));
+        }
+        if (!frameRects.get(0).isInScreen()){
+            frameRects.remove(0);
+        }
+        for (FrameRect frameRect : frameRects){
+            try {
+                frameDrawable = ContextCompat.getDrawable(getContext(), R.drawable.tile);
+                frameDrawable.setBounds(0, (int) frameRect.getTop(), (int) width, (int) frameRect.getBottom());
+                frameDrawable.draw(canvas);
+                frameDrawable.invalidateSelf();
+            }
+            catch (Exception e){
+                Log.d(TAG, "Exception caught", e);
+            }
+            frameRect.update();
+        }
         invalidate();
     }
 

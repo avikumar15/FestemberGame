@@ -36,11 +36,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         layoutManager = new LinearLayoutManager(this);
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new RecyclerViewAdapter();
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.smoothScrollToPosition(recyclerViewAdapter.getItemCount());
-        layoutManager.setReverseLayout(true);
+//        recyclerView.setLayoutManager(layoutManager);
+//        recyclerViewAdapter = new RecyclerViewAdapter();
+//        recyclerView.setAdapter(recyclerViewAdapter);
+//        recyclerView.smoothScrollToPosition(recyclerViewAdapter.getItemCount());
+//        layoutManager.setReverseLayout(true);
         frameLayout.addView(gamePlay);
     }
 }

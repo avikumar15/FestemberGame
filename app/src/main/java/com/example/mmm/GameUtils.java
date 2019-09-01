@@ -4,6 +4,7 @@ import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
 
 public class GameUtils {
+    public final static float FRAME_RECT_SPEED = 11.0f;  // Change this to adjust background moving speed.
     public static boolean getRandomSign() { return Math.random() < 0.5; }
     public static String getRandomObstacleType(){
         int i = (int) Math.floor(Math.random()*2);

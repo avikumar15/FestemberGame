@@ -56,15 +56,15 @@ public class Game {
             obstacle.moveDown();
         }
         if (obstacles.size() == 0){
-            Log.d(TAG, "No Obstacles now");
+//            Log.d(TAG, "No Obstacles now");
             addObstacle();
         }
         else if (obstacles.get(obstacles.size()-1).getTop() >= thresholdHeight){
-            Log.d(TAG, "Last obstacle crossed threshold. Can generate obstacle");
+//            Log.d(TAG, "Last obstacle crossed threshold. Can generate obstacle");
             addObstacle();
         }
         if (!obstacles.get(0).isAlive()){
-            Log.d(TAG, "First obstacle crossed boundary.");
+//            Log.d(TAG, "First obstacle crossed boundary.");
             obstacles.remove(0);
         }
     }
