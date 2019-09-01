@@ -1,6 +1,7 @@
 package com.example.mmm;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +24,7 @@ public class GamePlay extends View {
     private float height, width;
     float halfSideLength;
     float incrementVariable=0;
+
     private Path gameplayPath;
     float fingerX, fingerY;
     private boolean started = false, ended = false, gameOver = false;
@@ -38,8 +41,8 @@ public class GamePlay extends View {
         this.height = height;
 
         obstaclePaint.setColor(getResources().getColor(R.color.colorAccent));
-        brush.setColor(getResources().getColor(R.color.ball_color));
-        backgroundPaint.setColor(getResources().getColor(R.color.background_black));
+   //     brush.setColor(getResources().getColor(R.color.ball_color));
+   //     backgroundPaint.setColor(getResources().getColor(R.color.background_black));
         textPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
         textPaint.setTextSize(10.0f);
 
@@ -72,6 +75,8 @@ public class GamePlay extends View {
         ended = true;
         started = false;
         Log.d(TAG, "Game Over");
+
+
 //        Toast.makeText(mContext,"Game Over",Toast.LENGTH_SHORT).show();
     }
 
@@ -101,7 +106,7 @@ public class GamePlay extends View {
             showGameOverScreen(canvas);
         }
         else {
-            canvas.drawRect(0, 0, width, height, backgroundPaint);
+        //    canvas.drawRect(0, 0, width, height, backgroundPaint);
 //            halfSideLength = getHeight() / 30f;
             //    canvas.drawPath(gameplayPath,brush);
             canvas.drawCircle(fingerX, fingerY, 60, brush);
@@ -152,7 +157,12 @@ public class GamePlay extends View {
             case MotionEvent.ACTION_DOWN : {
                 if (!started && ended){
                     Log.d(TAG, "Going to starting screen");
-                    ended = false;
+
+                //    ended = false;
+
+                    Intent intent = new Intent(mContext,MainActivity.class);
+                    mContext.startActivity(intent);
+
                     invalidate();
                     return false;
                 }
