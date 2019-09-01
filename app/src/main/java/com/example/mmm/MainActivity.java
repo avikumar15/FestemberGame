@@ -15,11 +15,13 @@ public class MainActivity extends AppCompatActivity {
     final float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     final float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels ;
 
+    private final static String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        gamePlay = new GamePlay(this, 0,screenHeight/2f);
+        gamePlay = new GamePlay(this, screenWidth, screenHeight);
         frameLayout = new FrameLayout(this);
         frameLayout.addView(gamePlay);
         setContentView(frameLayout);
