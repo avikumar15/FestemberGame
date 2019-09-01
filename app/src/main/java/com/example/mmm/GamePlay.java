@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 
 public class GamePlay extends View {
 
+    public static final float POINTER_RADIUS = 60;
+    int scoreInt=0;
     private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint();
     private float x,y;
     private float height, width;
@@ -127,7 +130,7 @@ public class GamePlay extends View {
 //            halfSideLength = getHeight() / 30f;
             //    canvas.drawPath(gameplayPath,brush);
             drawFrameRect(canvas);
-            canvas.drawCircle(fingerX, fingerY, 60, brush);
+            canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);
             drawObstacles(canvas);
 
 //            canvas.drawRect(x - halfSideLength + incrementVariable, y - halfSideLength + incrementVariable, x + halfSideLength + incrementVariable, y + halfSideLength + incrementVariable, obstaclePaint);
@@ -140,7 +143,9 @@ public class GamePlay extends View {
 //                incrementVariable += 5;
 //            }
         }
-
+        scoreInt++;
+        canvas.drawText("Current Score - "+scoreInt,width/4f,height/8f,textPaint);      //not working work on it
+        System.out.println("Current Score - "+scoreInt);        // not working work on it
         invalidate();
     }
 
