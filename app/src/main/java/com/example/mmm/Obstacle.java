@@ -5,6 +5,8 @@ public interface Obstacle {
     public String getObstacleType();
     public float getCx();
     public float getCy();
+    public float getTop();
+    public float getBottom();
     public void moveDown();
     public boolean isInside(float x, float y);
     public boolean isAlive();

@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
+
 public class GamePlay extends View {
 
     private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint();
@@ -76,21 +78,15 @@ public class GamePlay extends View {
         started = false;
         Log.d(TAG, "Game Over");
 
-
-//        Toast.makeText(mContext,"Game Over",Toast.LENGTH_SHORT).show();
     }
 
     private void showStartingScreen(Canvas canvas){
         canvas.drawBitmap(startScreenResized, 0, 0, paint);
-//        canvas.drawText("Touch anywhere to start", 100, 100, textPaint);
         invalidate();
     }
 
     private void showGameOverScreen(Canvas canvas){
-//        canvas.drawBitmap(gameOverScreenResized, 0, 0, paint);
-//        canvas.drawRect(0, 0, width, height, backgroundPaint);
         canvas.drawBitmap(gameOverScreenResized, 0, 0, paint);
-//        canvas.drawText("Touch anywhere to start", 100, 100, textPaint);
         invalidate();
     }
 
@@ -130,19 +126,28 @@ public class GamePlay extends View {
         List<Obstacle> obstacles = game.getObstacles();
         for (Obstacle obstacle : obstacles){
             if (obstacle.getObstacleType().equals(Obstacle.ROTATING_OBSTACLE)){
-                RotatingObstacle rotatingObstacle = (RotatingObstacle)obstacle;
+                RotatingObstacle rotatingObstacle = (RotatingObstacle) obstacle;
                 canvas.drawCircle(rotatingObstacle.getObstacleCx1(), rotatingObstacle.getObstacleCy1(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
                 canvas.drawCircle(rotatingObstacle.getObstacleCx2(), rotatingObstacle.getObstacleCy2(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
-                if (rotatingObstacle.isInside(fingerX, fingerY)){
+                if (obstacle.isInside(fingerX, fingerY)){
                     Log.d(TAG, "Game Over! Ball inside obstacle: " + rotatingObstacle);
                     setGameOver();
                     invalidate();
                     break;
                 }
             }
-            obstacle.update();
-            obstacle.moveDown();
+            else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE)){
+                HorizontalObstacle horizontalObstacle = (HorizontalObstacle) obstacle;
+                canvas.drawRect(horizontalObstacle.getLeft(), horizontalObstacle.getTop(), horizontalObstacle.getRight(), horizontalObstacle.getBottom(), obstaclePaint);
+                if (obstacle.isInside(fingerX, fingerY)){
+                    Log.d(TAG, "Game Over! Ball inside obstacle: " + horizontalObstacle);
+                    setGameOver();
+                    invalidate();
+                    break;
+                }
+            }
         }
+        game.update();
         invalidate();
     }
 
