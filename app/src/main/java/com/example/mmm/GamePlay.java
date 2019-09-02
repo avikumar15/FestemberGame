@@ -124,6 +124,10 @@ public class GamePlay extends View {
         }
         else if (ended){
             showGameOverScreen(canvas);
+            textPaint.setTextSize(100);
+            canvas.drawText("Current Score - "+scoreInt,0,height/8f,textPaint);      //not working work on it
+            System.out.println("Current Score - "+scoreInt);        // not working work on it
+
         }
         else {
         //    canvas.drawRect(0, 0, width, height, backgroundPaint);
@@ -132,6 +136,10 @@ public class GamePlay extends View {
             drawFrameRect(canvas);
             canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);
             drawObstacles(canvas);
+            scoreInt++;
+            textPaint.setTextSize(100);
+            canvas.drawText("Current Score - "+scoreInt,0,height/8f,textPaint);      //not working work on it
+            System.out.println("Current Score - "+scoreInt);        // not working work on it
 
 //            canvas.drawRect(x - halfSideLength + incrementVariable, y - halfSideLength + incrementVariable, x + halfSideLength + incrementVariable, y + halfSideLength + incrementVariable, obstaclePaint);
 
@@ -143,9 +151,7 @@ public class GamePlay extends View {
 //                incrementVariable += 5;
 //            }
         }
-        scoreInt++;
-        canvas.drawText("Current Score - "+scoreInt,width/4f,height/8f,textPaint);      //not working work on it
-        System.out.println("Current Score - "+scoreInt);        // not working work on it
+
         invalidate();
     }
 
@@ -208,12 +214,13 @@ public class GamePlay extends View {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN : {
                 if (!started && ended){
+                    scoreInt=0;
                     Log.d(TAG, "Going to starting screen");
 
-                //    ended = false;
-
+                    ended = false;
+/*
                     Intent intent = new Intent(mContext,MainActivity.class);
-                    mContext.startActivity(intent);
+                    mContext.startActivity(intent);*/
 
                     invalidate();
                     return false;
