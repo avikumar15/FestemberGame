@@ -4,8 +4,7 @@ import android.support.annotation.NonNull;
 
 import static com.example.mmm.Game.EXT_PADDING;
 import static com.example.mmm.Game.MOVE_DOWN_RATE;
-import static com.example.mmm.GamePlay.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
+import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.getRandomSign;
 
 public class HorizontalObstacle implements Obstacle {
@@ -48,7 +47,7 @@ public class HorizontalObstacle implements Obstacle {
 
     @Override
     public void moveDown() {
-        cy += FRAME_RECT_SPEED;
+        cy += MOVE_DOWN_RATE;
         if (getTop() >= game.getHeight() - EXT_PADDING){
             isAlive = false;
         }
@@ -72,7 +71,12 @@ public class HorizontalObstacle implements Obstacle {
 
     @Override
     public boolean isInside(float x, float y) {
-        return (x >= cx - obstacleWidth/2f - POINTER_RADIUS && x <= cx + obstacleWidth/2f + POINTER_RADIUS && y >= cy - obstacleHeight/2f - POINTER_RADIUS && y <= cy + obstacleHeight + POINTER_RADIUS);
+        return (
+                x >= cx - obstacleWidth/2f - POINTER_RADIUS &&
+                x <= cx + obstacleWidth/2f + POINTER_RADIUS &&
+                y >= cy - obstacleHeight/2f - POINTER_RADIUS &&
+                y <= cy + obstacleHeight + POINTER_RADIUS
+        );
     }
 
     @Override

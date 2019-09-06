@@ -1,7 +1,7 @@
 package com.example.mmm;
 
 public interface Obstacle {
-    public final static String ROTATING_OBSTACLE = "RotatingObstacle", HORIZONTAL_OBSTACLE = "HorizontalObstacle";
+    public final static String ROTATING_OBSTACLE = "RotatingObstacle", HORIZONTAL_OBSTACLE = "HorizontalObstacle", CROSS_ROTATING_OBSTACLE = "CrossRotatingObstacle";
     public String getObstacleType();
     public float getCx();
     public float getCy();

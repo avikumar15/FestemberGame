@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import static com.example.mmm.Game.EXT_PADDING;
 import static com.example.mmm.Game.MOVE_DOWN_RATE;
-import static com.example.mmm.GamePlay.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
+import static com.example.mmm.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.GameUtils.distance;
 import static com.example.mmm.GameUtils.getRandomSign;
 
 public class RotatingObstacle implements Obstacle {
@@ -28,11 +28,11 @@ public class RotatingObstacle implements Obstacle {
 
     public float getObstacleCx1() { return cx + (float) (orbitRadius * Math.sin(theta)); }
 
-    public float getObstacleCy1() { return cy + (float) (orbitRadius * Math.cos(theta)) + FRAME_RECT_SPEED; }
+    public float getObstacleCy1() { return cy + (float) (orbitRadius * Math.cos(theta)); }
 
     public float getObstacleCx2() { return cx - (float) (orbitRadius * Math.sin(theta)); }
 
-    public float getObstacleCy2() { return cy - (float) (orbitRadius * Math.cos(theta)) + FRAME_RECT_SPEED; }
+    public float getObstacleCy2() { return cy - (float) (orbitRadius * Math.cos(theta)); }
 
     public float getObstacleRadius() { return obstacleRadius; }
 
@@ -49,19 +49,10 @@ public class RotatingObstacle implements Obstacle {
 
     @Override
     public boolean isInside(float x, float y){
-        double radialDistance1=1000, radialDistance2=1000;              //setting to a high value
-        radialDistance1 = Math.sqrt((float)((getObstacleCy1()-y)*(getObstacleCy1()-y) + (getObstacleCx1()-x)*(getObstacleCx1()-x)) );
-        radialDistance2 = Math.sqrt((float)((getObstacleCy2()-y)*(getObstacleCy2()-y) + (getObstacleCx2()-x)*(getObstacleCx2()-x)) );
-
-        if((radialDistance1<=(getObstacleRadius()+POINTER_RADIUS)) || (radialDistance2<=(getObstacleRadius()+POINTER_RADIUS)) )
-            return true;
-        /*if (x >= getObstacleCx1() - getObstacleRadius() && x <= getObstacleCx1() + getObstacleRadius() && y >= getObstacleCy1() - getObstacleRadius() && y <= getObstacleCy1() + getObstacleRadius()){
-            return true;
-        }
-        else if (x >= getObstacleCx2() - getObstacleRadius() && x <= getObstacleCx2() + getObstacleRadius() && y >= getObstacleCy2() - getObstacleRadius() && y <= getObstacleCy2() + getObstacleRadius()){
-            return true;
-        }*/
-        return false;
+        return (
+                distance(getObstacleCx1(), getObstacleCy1(), x, y) <= obstacleRadius + POINTER_RADIUS ||
+                        distance(getObstacleCx2(), getObstacleCy2(), x, y) <= obstacleRadius + POINTER_RADIUS
+        );
     }
 
     @Override
