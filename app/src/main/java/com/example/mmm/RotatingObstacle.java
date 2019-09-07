@@ -2,7 +2,7 @@ package com.example.mmm;
 
 import android.support.annotation.NonNull;
 
-import static com.example.mmm.Game.EXT_PADDING;
+import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.Game.MOVE_DOWN_RATE;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.distance;

@@ -21,17 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
+import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
+import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
 
 public class GamePlay extends View {
 
     private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint();
-    private float x,y;
     private float height, width;
-    float halfSideLength;
-    float incrementVariable=0;
 
     private Path gameplayPath;
     float fingerX, fingerY;
@@ -75,14 +74,13 @@ public class GamePlay extends View {
         startScreenResized = Bitmap.createScaledBitmap(startScreen, (int) width, (int) height, false);
         gameOverScreenResized = Bitmap.createScaledBitmap(gameOverScreen, (int) width, (int) height, false);
 
-        x = 0;
-        y = height/2;
-
 //        Log.d(TAG, "Height = " + height + ", width = " + width);
 
         mContext = context;
     }
 
+    // Add Game start code here
+    // It is better to add initialization of variables related to Game class in Game constructor.
     public void start(){
         started = true;
         ended = false;
@@ -100,6 +98,7 @@ public class GamePlay extends View {
         invalidate();
     }
 
+    // Add Game Over code here
     private void setGameOver(){
         gameOver = true;
         ended = true;
@@ -131,9 +130,6 @@ public class GamePlay extends View {
             textPaint.setTextSize(100);
         }
         else {
-        //    canvas.drawRect(0, 0, width, height, backgroundPaint);
-//            halfSideLength = getHeight() / 30f;
-            //    canvas.drawPath(gameplayPath,brush);
             drawFrameRect(canvas);
             canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);
             drawObstacles(canvas);
@@ -155,7 +151,7 @@ public class GamePlay extends View {
         for (Obstacle obstacle : obstacles){
             if (obstacle.isInside(fingerX, fingerY)){
 //                Log.d(TAG, "Game Over! Ball inside obstacle: " + obstacle);
-                setGameOver();
+//                setGameOver();
                 invalidate();
                 break;
             }
@@ -167,6 +163,30 @@ public class GamePlay extends View {
             else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE)){
                 HorizontalObstacle horizontalObstacle = (HorizontalObstacle) obstacle;
                 canvas.drawRect(horizontalObstacle.getLeft(), horizontalObstacle.getTop(), horizontalObstacle.getRight(), horizontalObstacle.getBottom(), obstaclePaint);
+            }
+            else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE_SET)){
+                HorizontalObstacleSet horizontalObstacleSet = (HorizontalObstacleSet) obstacle;
+                canvas.drawRect(
+                        EXT_PADDING,
+                        horizontalObstacleSet.getTop(),
+                        horizontalObstacleSet.getObstacleWidth(),
+                        horizontalObstacleSet.getBottom(),
+                        obstaclePaint
+                );
+                canvas.drawRect(
+                        width - horizontalObstacleSet.getObstacleWidth(),
+                        horizontalObstacleSet.getTop(),
+                        width - EXT_PADDING,
+                        horizontalObstacleSet.getBottom(),
+                        obstaclePaint
+                );
+                canvas.drawRect(
+                        horizontalObstacleSet.getLeft(),
+                        horizontalObstacleSet.getTop(),
+                        horizontalObstacleSet.getRight(),
+                        horizontalObstacleSet.getBottom(),
+                        obstaclePaint
+                );
             }
             else if (obstacle.getObstacleType().equals(CROSS_ROTATING_OBSTACLE)){
                 CrossRotatingObstacle crossRotatingObstacle = (CrossRotatingObstacle) obstacle;
@@ -241,9 +261,6 @@ public class GamePlay extends View {
                     invalidate();
                     return false;
                 }
-                FRAME_RECT_SPEED=11.0f;
-                Game.MOVE_DOWN_RATE=11.0f;
-
                 fingerX=cx;
                 fingerY=cy;
                 invalidate();
@@ -251,9 +268,6 @@ public class GamePlay extends View {
             }
             case MotionEvent.ACTION_MOVE: {
                 if (!started && !ended){
-                    Log.d(TAG, "Action Move");
-                    FRAME_RECT_SPEED=11.0f;
-                    Game.MOVE_DOWN_RATE=11.0f;
                     start();
                     invalidate();
                     return true;
@@ -267,8 +281,7 @@ public class GamePlay extends View {
                     return true;
                 }
                 if (!gameOver) {
-                    // add game over code here
-                    setGameOver();
+//                    setGameOver();
                     invalidate();
                     return false;
                 }

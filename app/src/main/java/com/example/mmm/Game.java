@@ -1,7 +1,6 @@
 package com.example.mmm;
 
 import android.util.Log;
-import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +14,15 @@ import static com.example.mmm.GameUtils.SCORE_INCREASE_RATE;
 import static com.example.mmm.GameUtils.getRandomObstacleType;
 import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
+import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
 
 public class Game {
-    public final static float EXT_PADDING = 25.0f;
     private float width, height, minDimension, score;
     public float thresholdHeight;
     private List<Obstacle> obstacles = new ArrayList<>();
     private final static String TAG = "Game";
-    public static float MOVE_DOWN_RATE= FRAME_RECT_SPEED;
+    public static float MOVE_DOWN_RATE;
 
     public Game(float width, float height){
         this.width = width;
@@ -31,13 +30,14 @@ public class Game {
         thresholdHeight = height * 0.5f;
         minDimension = Math.min(width, height);
         score = 0;
-
+        FRAME_RECT_SPEED = 11.0f;
+        MOVE_DOWN_RATE = FRAME_RECT_SPEED;
         addObstacle();
     }
 
     public void addObstacle(){
         String obstacleType = getRandomObstacleType();
-//        String obstacleType = CROSS_ROTATING_OBSTACLE;
+//        String obstacleType = HORIZONTAL_OBSTACLE_SET;
         Obstacle obstacle;
         float cx;
         switch (obstacleType){
@@ -52,6 +52,9 @@ public class Game {
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 obstacle = new CrossRotatingObstacle(width / 2, EXT_PADDING, Game.this);
                 break;
+            case HORIZONTAL_OBSTACLE_SET:
+                obstacle = new HorizontalObstacleSet(width/2, EXT_PADDING, Game.this);
+                break;
             default:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 obstacle = new HorizontalObstacle(cx, EXT_PADDING, Game.this);
@@ -65,7 +68,7 @@ public class Game {
     }
 
     public void update(){
-       if(FRAME_RECT_SPEED<=MAX_SPEED) {
+       if(FRAME_RECT_SPEED <= MAX_SPEED) {
            FRAME_RECT_SPEED += FRAME_SPEED_RATE;
            MOVE_DOWN_RATE += FRAME_SPEED_RATE;
        }

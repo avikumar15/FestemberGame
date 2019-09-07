@@ -1,6 +1,5 @@
 package com.example.mmm;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
 
 public class FrameRect {

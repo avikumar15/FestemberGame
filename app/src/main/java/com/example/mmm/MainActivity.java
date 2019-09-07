@@ -16,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     GamePlay gamePlay;
     FrameLayout frameLayout;
-    RecyclerView recyclerView;
-    RecyclerViewAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
 
@@ -34,14 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
         gamePlay = new GamePlay(this, screenWidth, screenHeight);
         frameLayout = (FrameLayout) findViewById(R.id.GameBackground);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        layoutManager = new LinearLayoutManager(this);
-
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerViewAdapter = new RecyclerViewAdapter();
-//        recyclerView.setAdapter(recyclerViewAdapter);
-//        recyclerView.smoothScrollToPosition(recyclerViewAdapter.getItemCount());
-//        layoutManager.setReverseLayout(true);
         frameLayout.addView(gamePlay);
     }
 }
