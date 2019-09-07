@@ -12,7 +12,7 @@ public class HorizontalObstacle implements Obstacle {
     private Game game;
     private boolean isAlive;
     private boolean isMovingRight;
-    final static float HORIZONTAL_MOVE_RATE = 20.0f;
+     static float HORIZONTAL_MOVE_RATE = 20f;
     final static float obstacleHeight = 250.0f, obstacleWidth = 250.0f;
 
     public HorizontalObstacle(float cx, float cy, Game game){

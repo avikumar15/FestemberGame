@@ -20,6 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
@@ -240,6 +241,8 @@ public class GamePlay extends View {
                     invalidate();
                     return false;
                 }
+                FRAME_RECT_SPEED=11.0f;
+                Game.MOVE_DOWN_RATE=11.0f;
 
                 fingerX=cx;
                 fingerY=cy;
@@ -249,6 +252,8 @@ public class GamePlay extends View {
             case MotionEvent.ACTION_MOVE: {
                 if (!started && !ended){
                     Log.d(TAG, "Action Move");
+                    FRAME_RECT_SPEED=11.0f;
+                    Game.MOVE_DOWN_RATE=11.0f;
                     start();
                     invalidate();
                     return true;
