@@ -13,6 +13,7 @@ public class GameUtils {
     public final static float SCORE_INCREASE_RATE = 0.05f;
     public final static float SCORE_EACH_OBSTACLE = 1;
     public final static float FRAME_SPEED_RATE=0.01f;
+    public final static float MAX_SPEED=50.0f;
     public static boolean getRandomSign() { return Math.random() < 0.5; }
     public static boolean getRandomSignProbability(double probability){ return Math.random() < probability; }
     public static String getRandomObstacleType(){
