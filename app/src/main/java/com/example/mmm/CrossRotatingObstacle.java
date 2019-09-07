@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.MOVE_DOWN_RATE;
+import static com.example.mmm.Game.MOVE_DOWN_RATE;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.distance;
 import static com.example.mmm.GameUtils.getRandomSign;

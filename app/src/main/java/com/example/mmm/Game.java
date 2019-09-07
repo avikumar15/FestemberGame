@@ -1,11 +1,14 @@
 package com.example.mmm;
 
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mmm.GameUtils.EXT_PADDING;
+import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
+import static com.example.mmm.GameUtils.FRAME_SPEED_RATE;
 import static com.example.mmm.GameUtils.SCORE_EACH_OBSTACLE;
 import static com.example.mmm.GameUtils.SCORE_INCREASE_RATE;
 import static com.example.mmm.GameUtils.getRandomObstacleType;
@@ -15,11 +18,11 @@ import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
 
 public class Game {
     public final static float EXT_PADDING = 25.0f;
-    public final static float MOVE_DOWN_RATE = 7.0f;
     private float width, height, minDimension, score;
     public float thresholdHeight;
     private List<Obstacle> obstacles = new ArrayList<>();
     private final static String TAG = "Game";
+    public static float MOVE_DOWN_RATE= FRAME_RECT_SPEED;
 
     public Game(float width, float height){
         this.width = width;
@@ -27,6 +30,7 @@ public class Game {
         thresholdHeight = height * 0.5f;
         minDimension = Math.min(width, height);
         score = 0;
+
         addObstacle();
     }
 
@@ -37,7 +41,7 @@ public class Game {
         float cx;
         switch (obstacleType){
             case ROTATING_OBSTACLE:
-                obstacle = new RotatingObstacle(width/2, EXT_PADDING, minDimension * 0.37f, Game.this);
+                obstacle = new RotatingObstacle(width/2, EXT_PADDING, minDimension * 0.33f, Game.this);
                 break;
             case HORIZONTAL_OBSTACLE:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
@@ -60,7 +64,10 @@ public class Game {
     }
 
     public void update(){
-
+       if(FRAME_RECT_SPEED<=50) {
+           FRAME_RECT_SPEED += FRAME_SPEED_RATE;
+           MOVE_DOWN_RATE += FRAME_SPEED_RATE;
+       }
         score += SCORE_INCREASE_RATE;
         for (Obstacle obstacle : obstacles){
             obstacle.update();
@@ -74,11 +81,12 @@ public class Game {
 //            Log.d(TAG, "Last obstacle crossed threshold. Can generate obstacle");
             addObstacle();
         }
-        if (!obstacles.get(0).isAlive()){
+        if (!obstacles.get(0).isAlive()) {
 //            Log.d(TAG, "First obstacle crossed boundary.");
             score += SCORE_EACH_OBSTACLE;
             obstacles.remove(0);
         }
+
     }
 
     public boolean checkGameOver(float x, float y){
