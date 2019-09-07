@@ -20,7 +20,7 @@ public class HorizontalObstacleSet implements Obstacle {
         this.cy = cy;
         this.game = game;
 
-        obstacleWidth = (game.getWidth() - 8 * POINTER_RADIUS) / 4;
+        obstacleWidth = (game.getWidth() - 8 * POINTER_RADIUS) / 4; // Reduce the number 8 to reduce the available space between the obstacle set
 
         isAlive = true;
         isMovingRight = getRandomSign();

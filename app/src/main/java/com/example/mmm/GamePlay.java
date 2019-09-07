@@ -151,7 +151,7 @@ public class GamePlay extends View {
         for (Obstacle obstacle : obstacles){
             if (obstacle.isInside(fingerX, fingerY)){
 //                Log.d(TAG, "Game Over! Ball inside obstacle: " + obstacle);
-//                setGameOver();
+                setGameOver();
                 invalidate();
                 break;
             }
@@ -281,7 +281,7 @@ public class GamePlay extends View {
                     return true;
                 }
                 if (!gameOver) {
-//                    setGameOver();
+                    setGameOver();
                     invalidate();
                     return false;
                 }
