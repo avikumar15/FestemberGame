@@ -16,20 +16,32 @@ public class CrossRotatingObstacle implements Obstacle {
     final static float obstacleThickness = 80.0f, orbitRadius = 300.0f, obstacleCenterRadius = 90.0f;
     final static float HORIZONTAL_MOVE_RATE = 10.0f, THETA_RATE = (float) Math.PI / 45.0f;
     private boolean isAlive, isMovingRight, isClockwise, hasDoubleLines, isTranslating;
+    // hasDoubleLines -> Whether or not the obstacle has double lines (cross shape) or not (Single line).
+    // isTranslating -> The obstacle will also move horizontally if this is set to true.
+
     private Game game;
     private float rotatedX, rotatedY, rotatedAngle, distance;
 
+    /**
+     * The parameter game can be replaced by just two parameters, width and height, if required.
+     * @param cx x coordinate of center of the obstacle
+     * @param cy y coordinate of center of the obstacle
+     * @param game The game instance for getting width and height
+     */
     public CrossRotatingObstacle(float cx, float cy, Game game){
         this.cx = cx;
         this.cy = cy;
         this.game = game;
 
+        /* Initially the obstacle is alive.
+           This goes false as soon as obstacle crosses the screen in y direction.
+        */
         isAlive = true;
         isClockwise = true;
         hasDoubleLines = getRandomSign();
-        isTranslating = getRandomSignProbability(0.75);
+        isTranslating = getRandomSignProbability(0.75); // 75% probability for translation in x-axis.
         if (isTranslating){
-            isMovingRight = getRandomSign();
+            isMovingRight = getRandomSign(); // If it translating, 50% probability for initially moving to the right side.
         }
         theta = 0f;
 
@@ -45,6 +57,7 @@ public class CrossRotatingObstacle implements Obstacle {
 
     @Override
     public void update() {
+        // Horizontal translation motion
         if (isTranslating) {
             if (isMovingRight) {
                 cx += HORIZONTAL_MOVE_RATE;
@@ -53,6 +66,7 @@ public class CrossRotatingObstacle implements Obstacle {
             }
         }
 
+        // Horizontal Bounce action if pointer goes to either end, by changing isMovingRight
         if (getLeft() <= EXT_PADDING){
             isMovingRight = true;
             isClockwise = !isClockwise;
@@ -62,6 +76,7 @@ public class CrossRotatingObstacle implements Obstacle {
             isClockwise = !isClockwise;
         }
 
+        // Rotational Motion
         if (isClockwise){
             theta += THETA_RATE;
         } else {
@@ -86,9 +101,17 @@ public class CrossRotatingObstacle implements Obstacle {
         return cx + orbitRadius;
     }
 
+    /**
+     * This rotates the axes and each points in the current coordinate system by angle theta in the anticlockwise direction.
+     * After rotation of axes, it is just a matter of checking whether the point lies inside the rectangle(s).
+     * @param x x coordinate of the pointer
+     * @param y y coordinate of the pointer
+     * @return Checks whether the pointer lies inside the obstacle (rotating cross).
+     */
     @Override
     public boolean isInside(float x, float y) {
         distance = distance(x, y, cx, cy);
+        // To check whether the pointer lies inside a small circle at the center.
         if (distance <= obstacleCenterRadius + POINTER_RADIUS){
             return true;
         }
@@ -106,6 +129,10 @@ public class CrossRotatingObstacle implements Obstacle {
         }
         rotatedX = cx + distance * (float) Math.cos(rotatedAngle + theta);
         rotatedY = cy - distance * (float) Math.sin(rotatedAngle + theta);
+        // rotatedX -> x coordinate in the new coordinate system of x after rotating the actual (previous) axes by angle theta.
+        // rotatedY -> y coordinate in the new coordinate system of y after rotating the actual (previous) axes by angle theta.
+
+        // If there is only one rectangle.
         if (!hasDoubleLines) {
             return (
                     rotatedX >= cx - orbitRadius - POINTER_RADIUS &&
@@ -114,6 +141,7 @@ public class CrossRotatingObstacle implements Obstacle {
                     rotatedY <= cy + obstacleThickness / 2 + POINTER_RADIUS
             );
         }
+        // If hasDoubleLines is true, then it has two rectangles. So checks are performed for two rectangles.
         else {
             return (
                     rotatedX >= cx - orbitRadius - POINTER_RADIUS &&
@@ -148,12 +176,6 @@ public class CrossRotatingObstacle implements Obstacle {
     public float getObstacleThickness() { return obstacleThickness; }
 
     public float getOrbitRadius() { return orbitRadius; }
-
-//    public float getRotatedAngle() { return rotatedAngle; }
-//
-//    public float getRotatedX() { return rotatedX; }
-//
-//    public float getRotatedY() { return rotatedY; }
 
     @Override
     public String getObstacleType() { return CROSS_ROTATING_OBSTACLE; }

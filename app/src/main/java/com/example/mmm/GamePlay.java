@@ -74,13 +74,14 @@ public class GamePlay extends View {
         startScreenResized = Bitmap.createScaledBitmap(startScreen, (int) width, (int) height, false);
         gameOverScreenResized = Bitmap.createScaledBitmap(gameOverScreen, (int) width, (int) height, false);
 
-//        Log.d(TAG, "Height = " + height + ", width = " + width);
-
         mContext = context;
     }
 
-    // Add Game start code here
-    // It is better to add initialization of variables related to Game class in Game constructor.
+    /**
+     * Called as soon the game starts from the starting screen.
+     * Add game start code here
+     * It is better to add initialization of variables related to Game class in Game constructor.
+     */
     public void start(){
         started = true;
         ended = false;
@@ -88,6 +89,7 @@ public class GamePlay extends View {
         game = new Game(width, height);
 
         tempBitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
+        // Contents of temp canvas are drawn in drawObstacles on canvas using temp bitmap.
         tempCanvas = new Canvas(tempBitmap);
 
         for (int i = maxFrames - 2; i >= 0; --i){
@@ -98,7 +100,9 @@ public class GamePlay extends View {
         invalidate();
     }
 
-    // Add Game Over code here
+    /**
+     * Called as soon as the game is over
+     */
     private void setGameOver(){
         gameOver = true;
         ended = true;
@@ -145,18 +149,25 @@ public class GamePlay extends View {
         invalidate();
     }
 
+    /**
+     * The main function that draws all the obstacles and the pointer.
+     * The drawing method varies from obstacle to obstacle.
+     * If the pointer is inside any obstacle, it calls the setGameOver function.
+     * @param canvas The canvas on which the obstacles and pointer is to be drawn
+     */
     private void drawObstacles(Canvas canvas){
         List<Obstacle> obstacles = game.getObstacles();
         tempCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         for (Obstacle obstacle : obstacles){
+            // If pointer is inside a obstacle, game is over.
             if (obstacle.isInside(fingerX, fingerY)){
-//                Log.d(TAG, "Game Over! Ball inside obstacle: " + obstacle);
                 setGameOver();
                 invalidate();
                 break;
             }
             if (obstacle.getObstacleType().equals(Obstacle.ROTATING_OBSTACLE)){
                 RotatingObstacle rotatingObstacle = (RotatingObstacle) obstacle;
+                // Drawing two circles.
                 canvas.drawCircle(rotatingObstacle.getObstacleCx1(), rotatingObstacle.getObstacleCy1(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
                 canvas.drawCircle(rotatingObstacle.getObstacleCx2(), rotatingObstacle.getObstacleCy2(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
             }
@@ -166,6 +177,7 @@ public class GamePlay extends View {
             }
             else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE_SET)){
                 HorizontalObstacleSet horizontalObstacleSet = (HorizontalObstacleSet) obstacle;
+                // Drawing a rectangle on the left end with width = obstacleWidth, height = obstacleHeight
                 canvas.drawRect(
                         EXT_PADDING,
                         horizontalObstacleSet.getTop(),
@@ -173,6 +185,7 @@ public class GamePlay extends View {
                         horizontalObstacleSet.getBottom(),
                         obstaclePaint
                 );
+                // Drawing a rectangle on the right end with width = obstacleWidth, height = obstacleHeight
                 canvas.drawRect(
                         width - horizontalObstacleSet.getObstacleWidth(),
                         horizontalObstacleSet.getTop(),
@@ -180,6 +193,7 @@ public class GamePlay extends View {
                         horizontalObstacleSet.getBottom(),
                         obstaclePaint
                 );
+                // Drawing a rectangle on the moving part with width = 2 * obstacleWidth, height = obstacleHeight
                 canvas.drawRect(
                         horizontalObstacleSet.getLeft(),
                         horizontalObstacleSet.getTop(),
@@ -190,6 +204,7 @@ public class GamePlay extends View {
             }
             else if (obstacle.getObstacleType().equals(CROSS_ROTATING_OBSTACLE)){
                 CrossRotatingObstacle crossRotatingObstacle = (CrossRotatingObstacle) obstacle;
+                // We draw a cross (or line if hasDoubleLines is false) in temp canvas and rotate it by an angle theta.
                 tempCanvas.save();
                 tempCanvas.rotate(
                         crossRotatingObstacle.getTheta() * (float) (180 / Math.PI),
@@ -212,15 +227,21 @@ public class GamePlay extends View {
                             obstaclePaint
                     );
                 }
+                // Drawing a small circle at the center of the obstacle.
                 tempCanvas.drawCircle(crossRotatingObstacle.getCx(), crossRotatingObstacle.getCy(), crossRotatingObstacle.getObstacleCenterRadius(), obstaclePaint);
                 tempCanvas.restore();
             }
         }
+        // Drawing the contents of temp canvas on original canvas by using temp bitmap.
         canvas.drawBitmap(tempBitmap, 0, 0, backgroundPaint);
         game.update();
         invalidate();
     }
 
+    /**
+     * Draws all the images (frameRects) on the canvas.
+     * @param canvas The canvas on which the background images are to be drawn.
+     */
     private void drawFrameRect(Canvas canvas){
         if (frameRects == null || frameRects.size() == 0){
             return;
@@ -247,6 +268,11 @@ public class GamePlay extends View {
         invalidate();
     }
 
+    /**
+     * If the game is running action move will move the pointer
+     * If the game is in starting screen, action move will start the game using start function
+     * If the game is in game over screen, action down will go the starting screen.
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
@@ -256,6 +282,7 @@ public class GamePlay extends View {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN : {
+                // If the game is in game over screen, action down will go the starting screen.
                 if (!started && ended){
                     ended = false;
                     invalidate();
@@ -267,6 +294,7 @@ public class GamePlay extends View {
                 return true;
             }
             case MotionEvent.ACTION_MOVE: {
+                // If the game is in starting screen, action move will start the game using start function
                 if (!started && !ended){
                     start();
                     invalidate();
@@ -280,6 +308,7 @@ public class GamePlay extends View {
                 if (!started && !ended){
                     return true;
                 }
+                // If the game is running and the player does anything other than action move, it will result in game over.
                 if (!gameOver) {
                     setGameOver();
                     invalidate();
@@ -292,6 +321,9 @@ public class GamePlay extends View {
         return false;
     }
 
+    /**
+     * @return Whether or not the game is in either the starting screen or game over screen, so that determining we can quit the app if back is pressed.
+     */
     public boolean canExit(){
         return gameOver || (!started && !ended) || (ended);
     }

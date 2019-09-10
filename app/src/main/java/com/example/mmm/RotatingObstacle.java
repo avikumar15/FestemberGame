@@ -13,6 +13,8 @@ public class RotatingObstacle implements Obstacle {
     private float cx, cy, orbitRadius, theta;
     private boolean isClockwise, isAlive = false;
     private Game game;
+    // obstacleRadius -> Radius of each of the two rotating circles.
+    // orbitRadius -> Radius of the circle around which the two circles orbit.
 
     public RotatingObstacle(float cx, float cy, float orbitRadius, Game game){
         this.cx = cx;
@@ -20,12 +22,16 @@ public class RotatingObstacle implements Obstacle {
         this.orbitRadius = orbitRadius;
         this.game = game;
 
+        /* Initially the obstacle is alive.
+           This goes false as soon as obstacle crosses the screen in y direction.
+        */
         isAlive = true;
         theta = (float) Math.PI / 2;
         isClockwise = getRandomSign();
 
     }
 
+    // These functions return the center coordinates of the two circles (rotating pair)
     public float getObstacleCx1() { return cx + (float) (orbitRadius * Math.sin(theta)); }
 
     public float getObstacleCy1() { return cy + (float) (orbitRadius * Math.cos(theta)); }
@@ -40,6 +46,7 @@ public class RotatingObstacle implements Obstacle {
 
     @Override
     public void update() {
+        // Rotational Motion
         if (isClockwise){
             theta += THETA_RATE;
         } else {

@@ -20,8 +20,17 @@ public class HorizontalObstacleSet implements Obstacle {
         this.cy = cy;
         this.game = game;
 
+        /* The width of obstacle is calculated programmatically so as to give the pointer sufficient space to pass through.
+           Available Space -> The space through which the pointer can pass.
+           Available space is divided into four parts:
+           1) Two at each ends and
+           2) Two parts sticking together and translating between the above mentioned two parts.
+        */
         obstacleWidth = (game.getWidth() - 8 * POINTER_RADIUS) / 4; // Reduce the number 8 to reduce the available space between the obstacle set
 
+        /* Initially the obstacle is alive.
+           This goes false as soon as obstacle crosses the screen in y direction.
+        */
         isAlive = true;
         isMovingRight = getRandomSign();
     }
@@ -37,12 +46,14 @@ public class HorizontalObstacleSet implements Obstacle {
 
     @Override
     public void update() {
+        // Horizontal translation motion
         if (isMovingRight){
             cx += HORIZONTAL_MOVE_RATE;
         } else{
             cx -= HORIZONTAL_MOVE_RATE;
         }
 
+        // Horizontal bounce action if pointer goes to either end, by changing isMovingRight
         if (cx <= 2 * obstacleWidth){
             isMovingRight = true;
         }

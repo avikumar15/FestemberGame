@@ -27,7 +27,7 @@ public class Game {
     public Game(float width, float height){
         this.width = width;
         this.height = height;
-        thresholdHeight = height * 0.5f;
+        thresholdHeight = height * 0.5f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
         minDimension = Math.min(width, height);
         score = 0;
         FRAME_RECT_SPEED = 11.0f;
@@ -35,9 +35,11 @@ public class Game {
         addObstacle();
     }
 
+    /**
+     * Adds an obstacle randomly in the game
+     */
     public void addObstacle(){
         String obstacleType = getRandomObstacleType();
-//        String obstacleType = HORIZONTAL_OBSTACLE_SET;
         Obstacle obstacle;
         float cx;
         switch (obstacleType){
@@ -46,10 +48,10 @@ public class Game {
                 break;
             case HORIZONTAL_OBSTACLE:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
+                // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
                 obstacle = new HorizontalObstacle(cx, EXT_PADDING, Game.this);
                 break;
             case CROSS_ROTATING_OBSTACLE:
-                cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 obstacle = new CrossRotatingObstacle(width / 2, EXT_PADDING, Game.this);
                 break;
             case HORIZONTAL_OBSTACLE_SET:
@@ -57,6 +59,7 @@ public class Game {
                 break;
             default:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
+                // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
                 obstacle = new HorizontalObstacle(cx, EXT_PADDING, Game.this);
                 break;
         }
@@ -67,6 +70,10 @@ public class Game {
         return obstacles;
     }
 
+    /**
+     * Updates the position of the obstacles in the game and removes it if goes beyond the screen.
+     * Calls addObstacle if the topmost obstacle crosses the threshold height.
+     */
     public void update(){
        if(FRAME_RECT_SPEED <= MAX_SPEED) {
            FRAME_RECT_SPEED += FRAME_SPEED_RATE;
@@ -78,21 +85,26 @@ public class Game {
             obstacle.moveDown();
         }
         if (obstacles.size() == 0){
-//            Log.d(TAG, "No Obstacles now");
             addObstacle();
         }
         else if (obstacles.get(obstacles.size()-1).getTop() >= thresholdHeight){
-//            Log.d(TAG, "Last obstacle crossed threshold. Can generate obstacle");
+            // Last obstacle crossed threshold. Can generate obstacle
             addObstacle();
         }
         if (!obstacles.get(0).isAlive()) {
-//            Log.d(TAG, "First obstacle crossed boundary.");
+            // First obstacle crossed boundary (can be removed)
             score += SCORE_EACH_OBSTACLE;
             obstacles.remove(0);
         }
 
     }
 
+    /**
+     * This function was not used. Instead directly the check was performed in drawObstacles in GamePlay.
+     * @param x x coordinate of the pointer
+     * @param y y coordinate of the pointer
+     * @return Returns whether the game is over or not
+     */
     public boolean checkGameOver(float x, float y){
         if (obstacles == null){
             return true;

@@ -20,6 +20,9 @@ public class HorizontalObstacle implements Obstacle {
         this.cy = cy;
         this.game = game;
 
+        /* Initially the obstacle is alive.
+           This goes false as soon as obstacle crosses the screen in y direction.
+        */
         isAlive = true;
         isMovingRight = getRandomSign();
     }
@@ -55,12 +58,14 @@ public class HorizontalObstacle implements Obstacle {
 
     @Override
     public void update() {
+        // Horizontal translation motion
         if (isMovingRight){
             cx += HORIZONTAL_MOVE_RATE;
         } else{
             cx -= HORIZONTAL_MOVE_RATE;
         }
 
+        // Horizontal bounce action if pointer goes to either end, by changing isMovingRight
         if (cx <= EXT_PADDING + obstacleWidth / 2.0f){
             isMovingRight = true;
         }
