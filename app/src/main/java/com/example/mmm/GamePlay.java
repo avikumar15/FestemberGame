@@ -61,8 +61,8 @@ public class GamePlay extends View {
         textPaint.setColor(getResources().getColor(R.color.white));
         textPaint.setTextSize(80.0f);
 
-        startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.start_screen);
-        gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_over_screen);
+        startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.start_screen_min);
+        gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_over_screen_min);
 
         startScreenResized = Bitmap.createScaledBitmap(startScreen, (int) width, (int) height, false);
         gameOverScreenResized = Bitmap.createScaledBitmap(gameOverScreen, (int) width, (int) height, false);
@@ -300,7 +300,7 @@ public class GamePlay extends View {
         }
         for (FrameRect frameRect : frameRects){
             try {
-                frameDrawable = ContextCompat.getDrawable(getContext(), R.drawable.tile);
+                frameDrawable = ContextCompat.getDrawable(getContext(), R.drawable.tile2);
                 frameDrawable.setBounds(0, (int) frameRect.getTop(), (int) width, (int) frameRect.getBottom());
                 frameDrawable.draw(canvas);
                 frameDrawable.invalidateSelf();

@@ -10,7 +10,7 @@ import static com.example.mmm.GameUtils.getRandomSign;
 
 public class LayeredHorizontalObjects implements Obstacle {
     static float HORIZONTAL_MOVE_RATE = 15f;
-    static float obstacleHeight = 300.0f, obstacleWidth = 300.0f;
+    static float obstacleHeight = 270.0f, obstacleWidth = 270.0f;
     private float cx, cy;
     private Game game;
     private boolean isAlive;
@@ -68,7 +68,7 @@ public class LayeredHorizontalObjects implements Obstacle {
 
     @Override
     public void moveDown() {
-        cy += MOVE_DOWN_RATE;
+        cy += game.moveDownSpeed;
         if (getTop() >= game.getHeight() - EXT_PADDING) {
             isAlive = false;
         }
