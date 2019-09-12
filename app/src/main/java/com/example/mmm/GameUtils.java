@@ -6,7 +6,6 @@ import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
 
 public class GameUtils {
-    public static float FRAME_RECT_SPEED = 11.0f;  // Change this to adjust moving speed of background. This is just for the background
     public final static float EXT_PADDING = 25.0f;
     public static final float POINTER_RADIUS = 50f;
     public final static int TYPES_OF_OBSTACLES = 4; // Update the number of obstacles if a new class of Obstacle is created.
@@ -14,6 +13,7 @@ public class GameUtils {
     public final static float SCORE_EACH_OBSTACLE = 1;
     public final static float FRAME_SPEED_RATE = 0.01f;
     public final static float MAX_SPEED = 50.0f;
+    public final static float INITIAL_FRAME_RECT_SPEED = 11.0f;
 
     /**
      * @return Returns true or false with 50-50 probability.

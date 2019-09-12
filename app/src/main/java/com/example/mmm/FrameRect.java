@@ -1,22 +1,21 @@
 package com.example.mmm;
 
-import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
-
 public class FrameRect {
-    private float top, bottom, height;
+    private float top, bottom;
     private boolean inScreen;
+    private Game game;
 
-    public FrameRect(float top, float bottom, float height){
+    public FrameRect(float top, float bottom, Game game){
         this.top = top;
         this.bottom = bottom;
-        this.height = height;
+        this.game = game;
         inScreen = true;
     }
 
     public void update(){
-        top += FRAME_RECT_SPEED;
-        bottom += FRAME_RECT_SPEED;
-        if (top >= height){
+        top += game.frameRectSpeed;
+        bottom += game.frameRectSpeed;
+        if (top >= game.getHeight()){
             inScreen = false;
         }
     }

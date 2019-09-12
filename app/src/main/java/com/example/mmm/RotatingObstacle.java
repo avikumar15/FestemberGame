@@ -3,7 +3,6 @@ package com.example.mmm;
 import android.support.annotation.NonNull;
 
 import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.Game.MOVE_DOWN_RATE;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.distance;
 import static com.example.mmm.GameUtils.getRandomSign;
@@ -64,7 +63,7 @@ public class RotatingObstacle implements Obstacle {
 
     @Override
     public void moveDown(){
-        cy += MOVE_DOWN_RATE;
+        cy += game.moveDownSpeed;
         if (getTop() >= game.getHeight() - EXT_PADDING){
             isAlive = false;
         }

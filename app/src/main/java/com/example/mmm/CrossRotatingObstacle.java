@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.Game.MOVE_DOWN_RATE;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.distance;
 import static com.example.mmm.GameUtils.getRandomSign;
@@ -23,7 +22,6 @@ public class CrossRotatingObstacle implements Obstacle {
     private float rotatedX, rotatedY, rotatedAngle, distance;
 
     /**
-     * The parameter game can be replaced by just two parameters, width and height, if required.
      * @param cx x coordinate of center of the obstacle
      * @param cy y coordinate of center of the obstacle
      * @param game The game instance for getting width and height
@@ -49,7 +47,7 @@ public class CrossRotatingObstacle implements Obstacle {
 
     @Override
     public void moveDown() {
-        cy += MOVE_DOWN_RATE;
+        cy += game.moveDownSpeed;
         if (getTop() >= game.getHeight() - EXT_PADDING){
             isAlive = false;
         }

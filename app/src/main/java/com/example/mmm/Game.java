@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
 import static com.example.mmm.GameUtils.FRAME_SPEED_RATE;
+import static com.example.mmm.GameUtils.INITIAL_FRAME_RECT_SPEED;
 import static com.example.mmm.GameUtils.MAX_SPEED;
 import static com.example.mmm.GameUtils.SCORE_EACH_OBSTACLE;
 import static com.example.mmm.GameUtils.SCORE_INCREASE_RATE;
@@ -21,8 +21,10 @@ public class Game {
     private float width, height, minDimension, score;
     public float thresholdHeight;
     private List<Obstacle> obstacles = new ArrayList<>();
+    private List<Powerup> powerups = new ArrayList<>();
     private final static String TAG = "Game";
-    public static float MOVE_DOWN_RATE;
+    public float moveDownSpeed;
+    public float frameRectSpeed;  // Change this to adjust moving speed of background. This is just for the background
 
     public Game(float width, float height){
         this.width = width;
@@ -30,8 +32,8 @@ public class Game {
         thresholdHeight = height * 0.5f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
         minDimension = Math.min(width, height);
         score = 0;
-        FRAME_RECT_SPEED = 11.0f;
-        MOVE_DOWN_RATE = FRAME_RECT_SPEED;
+        frameRectSpeed = INITIAL_FRAME_RECT_SPEED;
+        moveDownSpeed = INITIAL_FRAME_RECT_SPEED;
         addObstacle();
     }
 
@@ -75,9 +77,9 @@ public class Game {
      * Calls addObstacle if the topmost obstacle crosses the threshold height.
      */
     public void update(){
-       if(FRAME_RECT_SPEED <= MAX_SPEED) {
-           FRAME_RECT_SPEED += FRAME_SPEED_RATE;
-           MOVE_DOWN_RATE += FRAME_SPEED_RATE;
+       if(frameRectSpeed <= MAX_SPEED) {
+           frameRectSpeed += FRAME_SPEED_RATE;
+           moveDownSpeed += FRAME_SPEED_RATE;
        }
         score += SCORE_INCREASE_RATE;
         for (Obstacle obstacle : obstacles){

@@ -20,7 +20,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.mmm.GameUtils.FRAME_RECT_SPEED;
 import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
@@ -36,7 +35,7 @@ public class GamePlay extends View {
     float fingerX, fingerY;
     private boolean started = false, ended = false, gameOver = false;
     Context mContext;
-    private Bitmap startScreen, gameOverScreen, startScreenResized, gameOverScreenResized;
+    private Bitmap startScreenResized, gameOverScreenResized;
     private Game game;
 
     public int maxFrames = 4;  // Increase this to make size of each background bitmap to reduce
@@ -68,8 +67,8 @@ public class GamePlay extends View {
         textPaint.setColor(getResources().getColor(R.color.white));
         textPaint.setTextSize(80.0f);
 
-        startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.start_screen);
-        gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_over_screen);
+        Bitmap startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.start_screen);
+        Bitmap gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_over_screen);
 
         startScreenResized = Bitmap.createScaledBitmap(startScreen, (int) width, (int) height, false);
         gameOverScreenResized = Bitmap.createScaledBitmap(gameOverScreen, (int) width, (int) height, false);
@@ -93,7 +92,7 @@ public class GamePlay extends View {
         tempCanvas = new Canvas(tempBitmap);
 
         for (int i = maxFrames - 2; i >= 0; --i){
-            frameRects.add(new FrameRect(frameHeight * i, frameHeight * (i + 1), height));
+            frameRects.add(new FrameRect(frameHeight * i, frameHeight * (i + 1), game));
         }
 
         Log.d(TAG, "Started!");
@@ -248,7 +247,7 @@ public class GamePlay extends View {
         }
         float frameTop = frameRects.get(frameRects.size() - 1).getTop();
         if (frameTop > 0){
-            frameRects.add(new FrameRect(frameTop - frameHeight, frameTop, height));
+            frameRects.add(new FrameRect(frameTop - frameHeight, frameTop, game));
         }
         if (!frameRects.get(0).isInScreen()){
             frameRects.remove(0);
