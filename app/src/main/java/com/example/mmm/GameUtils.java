@@ -6,14 +6,15 @@ import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
+import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
 
 public class GameUtils {
     public final static float EXT_PADDING = 25.0f;
     public final static float GAP_LAYERED_OBSTACLE = 30.0f;
     //    public final static float MOVE_DOWN_RATE = FRAME_RECT_SPEED; // This is the vertical speed of obstacles.
-    public static final float POINTER_RADIUS = 50f;
-    public final static int TYPES_OF_OBSTACLES = 5;
+    public static final float POINTER_RADIUS = 45f;
+    public final static int TYPES_OF_OBSTACLES = 6;
     public final static float SCORE_INCREASE_RATE = 0.05f;
     public final static float SCORE_EACH_OBSTACLE = 1;
     public final static float FRAME_SPEED_RATE = 0.01f;
@@ -53,6 +54,8 @@ public class GameUtils {
                 return HORIZONTAL_OBSTACLE_SET;
             case 4:
                 return HORIZONTAL_LAYERED_OBSTACLE;
+            case 5:
+                return MUTUALLY_ATTRACTED_OBSTACLE;
             default:
                 return CROSS_ROTATING_OBSTACLE;
         }

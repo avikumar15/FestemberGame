@@ -1,6 +1,8 @@
 package com.example.mmm;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -24,10 +27,12 @@ import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
+import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
 
 public class GamePlay extends View {
 
     private final static String TAG = "GamePlay";
+    PointerDrawable pointerDrawable;
     public int maxFrames = 4;  // Increase this to make size of each background bitmap to reduce
     public float frameHeight;
     float fingerX, fingerY;
@@ -70,6 +75,8 @@ public class GamePlay extends View {
         mContext = context;
     }
 
+
+
     /**
      * Called as soon the game starts from the starting screen.
      * Add game start code here
@@ -102,10 +109,6 @@ public class GamePlay extends View {
         started = false;
 
         // free canvas objects
-        //   Intent intent = new Intent(mContext,MainActivity.class);
-        //   mContext.startActivity(intent);
-        //   ((Activity)mContext).finish();
-        //   ((Activity)mContext).overridePendingTransition(0,0);
 
         Log.d(TAG, "Game Over");
 
@@ -132,6 +135,8 @@ public class GamePlay extends View {
             textPaint.setTextSize(100);
         } else {
             drawFrameRect(canvas);
+        //    pointerDrawable = new PointerDrawable(mContext,fingerX,fingerY,POINTER_RADIUS,brush);
+        //    pointerDrawable.draw(canvas);
             canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);
             drawObstacles(canvas);
 
@@ -246,7 +251,14 @@ public class GamePlay extends View {
                         horizontalObstacleSet.getBottom(),
                         obstaclePaint
                 );
-            } else if (obstacle.getObstacleType().equals(CROSS_ROTATING_OBSTACLE)) {
+            }
+            else if(obstacle.getObstacleType().equals(MUTUALLY_ATTRACTED_OBSTACLE)) {
+                MutuallyAttractedObstacles mutuallyAttractedObstacles = (MutuallyAttractedObstacles) obstacle;
+                canvas.drawRect(mutuallyAttractedObstacles.getLeft(), mutuallyAttractedObstacles.getTop(), mutuallyAttractedObstacles.getRight(), mutuallyAttractedObstacles.getBottom(), obstaclePaint);
+                canvas.drawRect(mutuallyAttractedObstacles.getLeft() + getWidth()-2*mutuallyAttractedObstacles.getCx(), mutuallyAttractedObstacles.getTop(), mutuallyAttractedObstacles.getRight()+ getWidth()-2*mutuallyAttractedObstacles.getCx(), mutuallyAttractedObstacles.getBottom(), obstaclePaint);
+                System.out.println("entered");
+            }
+            else if (obstacle.getObstacleType().equals(CROSS_ROTATING_OBSTACLE)) {
                 CrossRotatingObstacle crossRotatingObstacle = (CrossRotatingObstacle) obstacle;
                 // We draw a cross (or line if hasDoubleLines is false) in temp canvas and rotate it by an angle theta.
                 tempCanvas.save();
@@ -328,7 +340,11 @@ public class GamePlay extends View {
             case MotionEvent.ACTION_DOWN: {
                 // If the game is in game over screen, action down will go the starting screen.
                 if (!started && ended) {
-                    ended = false;
+                 //   ended = false;
+                    Intent intent = new Intent(mContext,MainActivity.class);
+                    mContext.startActivity(intent);
+                    ((Activity)mContext).finish();
+                    ((Activity)mContext).overridePendingTransition(0,0);
                     invalidate();
                     return false;
                 }

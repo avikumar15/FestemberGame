@@ -16,6 +16,7 @@ import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
+import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
 
 public class Game {
@@ -31,7 +32,7 @@ public class Game {
     public Game(float width, float height){
         this.width = width;
         this.height = height;
-        thresholdHeight = height * 0.75f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
+        thresholdHeight = height * 1.0f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
         minDimension = Math.min(width, height);
         score = 0;
         frameRectSpeed = INITIAL_FRAME_RECT_SPEED;
@@ -65,6 +66,11 @@ public class Game {
                 cx = EXT_PADDING + LayeredHorizontalObjects.obstacleWidth + (width - 2 * EXT_PADDING - LayeredHorizontalObjects.obstacleWidth) * (float) Math.random();
                 obstacle = new LayeredHorizontalObjects(cx,EXT_PADDING,Game.this);
                 break;
+
+            case MUTUALLY_ATTRACTED_OBSTACLE :
+                obstacle = new MutuallyAttractedObstacles(width/2 - MutuallyAttractedObstacles.obstacleWidth/2f, EXT_PADDING, Game.this);
+                break;
+
             default:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
