@@ -27,14 +27,32 @@ public interface Powerup {
     public boolean disableCollisions();
 
     /**
-     * @return True if picked and if time elapsed from picking is less than time duration. False in all other cases.
+     * Increases the y coordinate by move down rate.
+     * This is same for all the types of power-ups.
      */
-    public boolean isPicked();
+    public void moveDown();
+
+    public boolean isInside(float x, float y);
 
     /**
-     * @return Whether or not power-up can be picked.
+     * @return Whether or not power-up can be picked. ie. it is in screen
      */
     public boolean canPick();
+
+    /**
+     * @return Returns whether the powerup is active. ie. True if picked and if time elapsed from picking is less than time duration. False in all other cases.
+     */
+    public boolean isActive();
+
+    public boolean isPicked();
+
+    public float getTimePicked();
+
+    public void updateTimePicked();
+
+    public void setPicked();
+
+    public void setActive();
 
     /**
      * @return x coordinate of centre point of the power-up.
@@ -55,4 +73,6 @@ public interface Powerup {
      * @return y coordinate of the bottom-most point of the power-up.
      */
     public float getBottom();
+
+    public String getPowerupType();
 }

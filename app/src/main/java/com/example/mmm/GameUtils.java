@@ -8,18 +8,20 @@ import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
 import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
+import static com.example.mmm.Powerup.DISABLE_COLLISIONS_POWERUP;
+import static com.example.mmm.Powerup.SLOW_GAME_POWERUP;
 
 public class GameUtils {
     public final static float EXT_PADDING = 25.0f;
     public final static float GAP_LAYERED_OBSTACLE = 30.0f;
     //    public final static float MOVE_DOWN_RATE = FRAME_RECT_SPEED; // This is the vertical speed of obstacles.
     public static final float POINTER_RADIUS = 45f;
-    public final static int TYPES_OF_OBSTACLES = 6;
+    public final static int TYPES_OF_OBSTACLES = 6;  // Update the number of obstacles if a new class of Obstacle is created.
+    public final static int TYPES_OF_POWERUPS = 2;
     public final static float SCORE_INCREASE_RATE = 0.05f;
     public final static float SCORE_EACH_OBSTACLE = 1;
     public final static float FRAME_SPEED_RATE = 0.01f;
     public final static float MAX_SPEED = 50.0f;
-    public static float FRAME_RECT_SPEED = 11.0f;  // Change this to adjust moving speed of background. This is just for the background
     public final static float INITIAL_FRAME_RECT_SPEED = 11.0f;
 
     /**
@@ -61,7 +63,15 @@ public class GameUtils {
         }
     }
 
-    public static float distance(float x1, float y1, float x2, float y2) {
+    public static String getRandomPowerup(){
+        int i = (int) Math.floor(Math.random() * TYPES_OF_POWERUPS);
+        switch (i){
+            case 0: return SLOW_GAME_POWERUP;
+            case 1: return DISABLE_COLLISIONS_POWERUP;
+            default: return SLOW_GAME_POWERUP;
+        }
+    }
+    public static float distance(float x1, float y1, float x2, float y2){
         return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 }

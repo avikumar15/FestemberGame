@@ -12,12 +12,15 @@ import static com.example.mmm.GameUtils.MAX_SPEED;
 import static com.example.mmm.GameUtils.SCORE_EACH_OBSTACLE;
 import static com.example.mmm.GameUtils.SCORE_INCREASE_RATE;
 import static com.example.mmm.GameUtils.getRandomObstacleType;
+import static com.example.mmm.GameUtils.getRandomSignProbability;
 import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
 import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
 import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
+import static com.example.mmm.Powerup.DISABLE_COLLISIONS_POWERUP;
+import static com.example.mmm.Powerup.SLOW_GAME_POWERUP;
 
 public class Game {
     private float width, height, minDimension, score;
@@ -27,7 +30,9 @@ public class Game {
     private final static String TAG = "Game";
     public float moveDownSpeed;
     public float frameRectSpeed;  // Change this to adjust moving speed of background. This is just for the background
-    public static float MOVE_DOWN_RATE;
+    private boolean disableCollisions;
+    private float powerUpProbability = 0.005f; // Probability of getting a powerup randomly in the game.
+    private int maxPowerupsRate = 1;
 
     public Game(float width, float height){
         this.width = width;
@@ -37,6 +42,7 @@ public class Game {
         score = 0;
         frameRectSpeed = INITIAL_FRAME_RECT_SPEED;
         moveDownSpeed = INITIAL_FRAME_RECT_SPEED;
+        disableCollisions = false;
         addObstacle();
     }
 
@@ -80,9 +86,38 @@ public class Game {
         obstacles.add(obstacle);
     }
 
+    /**
+     * Adds a power-up randomly in the game
+     */
+    public void addPowerup(){
+        String powerupType = DISABLE_COLLISIONS_POWERUP;
+        float cx;
+        Powerup powerup;
+        switch (powerupType){
+            case DISABLE_COLLISIONS_POWERUP:
+                cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
+                // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
+                powerup = new DisableCollisionsPowerup(cx, EXT_PADDING, Game.this);
+                break;
+            case SLOW_GAME_POWERUP:
+                cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
+                // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
+                powerup = new SlowGamePowerup(cx, EXT_PADDING, Game.this);
+                break;
+            default:
+                cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
+                // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
+                powerup = new SlowGamePowerup(cx, EXT_PADDING, Game.this);
+                break;
+        }
+        powerups.add(powerup);
+    }
+
     public List<Obstacle> getObstacles(){
         return obstacles;
     }
+
+    public List<Powerup> getPowerups() { return powerups; }
 
     /**
      * Updates the position of the obstacles in the game and removes it if goes beyond the screen.
@@ -111,7 +146,38 @@ public class Game {
             obstacles.remove(0);
         }
 
+        //Powerups part
+
+        boolean flag = false;
+        int i;
+        for (i = 0; i < powerups.size(); ++i){
+            Powerup powerup = powerups.get(i);
+            powerup.moveDown();
+            if (powerup.isActive()){
+                powerup.updateTimePicked();
+            }
+            if (!disableCollisions && powerup.disableCollisions() && powerup.isActive()){
+                flag = true;
+            }
+        }
+        if(flag) {
+            disableCollisions = true;
+        }
+        else if (disableCollisions && i == powerups.size() - 1){
+            disableCollisions = false;
+        }
+
+        if (getRandomSignProbability(powerUpProbability) && powerups.size() < maxPowerupsRate){
+            Log.d(TAG, "Powerups size: " + powerups.size() + ", can generate powerups");
+            addPowerup();
+        }
+        if (powerups.size() > 0 && !powerups.get(0).canPick()){
+            powerups.remove(0);
+        }
+
     }
+
+    public boolean isDisableCollisions() { return disableCollisions; }
 
     /**
      * This function was not used. Instead directly the check was performed in drawObstacles in GamePlay.

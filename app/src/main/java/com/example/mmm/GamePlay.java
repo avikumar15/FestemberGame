@@ -28,6 +28,7 @@ import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
 import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
+import static com.example.mmm.Powerup.DISABLE_COLLISIONS_POWERUP;
 
 public class GamePlay extends View {
 
@@ -37,7 +38,7 @@ public class GamePlay extends View {
     public float frameHeight;
     float fingerX, fingerY;
     Context mContext;
-    private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint();
+    private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint(), powerupPaint = new Paint();
     private float height, width;
     private Path gameplayPath;
     private boolean started = false, ended = false, gameOver = false;
@@ -61,8 +62,10 @@ public class GamePlay extends View {
             frameHeight = height;
         }
 
+        brush.setStyle(Paint.Style.FILL_AND_STROKE);
+
         obstaclePaint.setColor(getResources().getColor(R.color.colorAccent));
-        //     brush.setColor(getResources().getColor(R.color.ball_color));
+        powerupPaint.setColor(getResources().getColor(R.color.colorPrimary));
         textPaint.setColor(getResources().getColor(R.color.white));
         textPaint.setTextSize(80.0f);
 
@@ -138,6 +141,8 @@ public class GamePlay extends View {
         //    pointerDrawable = new PointerDrawable(mContext,fingerX,fingerY,POINTER_RADIUS,brush);
         //    pointerDrawable.draw(canvas);
             canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);
+//            canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);
+            drawPointer(canvas);
             drawObstacles(canvas);
 
             // Avoiding game null pointer exception
@@ -162,7 +167,7 @@ public class GamePlay extends View {
         tempCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         for (Obstacle obstacle : obstacles) {
             // If pointer is inside a obstacle, game is over.
-            if (obstacle.isInside(fingerX, fingerY)) {
+            if (obstacle.isInside(fingerX, fingerY) && !game.isDisableCollisions()) {
                 setGameOver();
                 invalidate();
                 break;
@@ -288,10 +293,78 @@ public class GamePlay extends View {
                 tempCanvas.restore();
             }
         }
+        for (Powerup powerup : game.getPowerups()){
+            if (!powerup.isPicked()) {
+                if (powerup.isInside(fingerX, fingerY)) {
+                    Log.d(TAG, "Inside powerup");
+                    powerup.setPicked();
+                    invalidate();
+                }
+
+                DisableCollisionsPowerup disableCollisionsPowerup = (DisableCollisionsPowerup) powerup;
+                canvas.drawRect(
+                        disableCollisionsPowerup.getLeft(),
+                        disableCollisionsPowerup.getTop(),
+                        disableCollisionsPowerup.getRight(),
+                        disableCollisionsPowerup.getBottom(),
+                        powerupPaint
+                );
+            }
+        }
         // Drawing the contents of temp canvas on original canvas by using temp bitmap.
         canvas.drawBitmap(tempBitmap, 0, 0, backgroundPaint);
         game.update();
         invalidate();
+    }
+
+    private void drawPointer(Canvas canvas){
+        if (!game.isDisableCollisions()){
+            canvas.drawCircle(
+                    fingerX,
+                    fingerY,
+                    POINTER_RADIUS,
+                    brush
+            );
+        }
+        else {
+            float expandedPointerRadius = POINTER_RADIUS * 1.3f;
+            canvas.drawCircle(
+                    fingerX,
+                    fingerY,
+                    expandedPointerRadius,
+                    brush
+            );
+            float x, y;
+            for (float theta = 0; theta < 2 * (float) Math.PI; theta += (float) Math.PI / 4){
+                float theta2 = theta + (float) Math.PI / 10;
+                x = fingerX + expandedPointerRadius * 1.4f * (float) (Math.cos(theta) + Math.cos(theta2)) / 2;
+                y = fingerY + expandedPointerRadius * 1.4f * (float) (Math.sin(theta) + Math.sin(theta2)) / 2;
+
+                canvas.drawLine(
+                        fingerX + expandedPointerRadius * (float) Math.cos(theta),
+                        fingerY + expandedPointerRadius * (float) Math.sin(theta),
+                        x,
+                        y,
+                        brush
+                );
+
+                canvas.drawLine(
+                        x,
+                        y,
+                        fingerX + expandedPointerRadius * (float) Math.cos(theta2),
+                        fingerY + expandedPointerRadius * (float) Math.sin(theta2),
+                        brush
+                );
+
+                canvas.drawLine(
+                        fingerX + expandedPointerRadius * (float) Math.cos(theta2),
+                        fingerY + expandedPointerRadius * (float) Math.sin(theta2),
+                        fingerX + expandedPointerRadius * (float) Math.cos(theta),
+                        fingerY + expandedPointerRadius * (float) Math.sin(theta),
+                        brush
+                );
+            }
+        }
     }
 
     /**

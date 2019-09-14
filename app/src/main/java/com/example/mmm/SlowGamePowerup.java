@@ -1,5 +1,6 @@
 package com.example.mmm;
 
+import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.FRAME_SPEED_RATE;
 import static com.example.mmm.GameUtils.INITIAL_FRAME_RECT_SPEED;
 
@@ -7,7 +8,8 @@ public class SlowGamePowerup implements Powerup {
     private final static float TIME_DURATION = 100f;
     private final static float height = 200f;
     private float cx, cy;
-    private boolean isPicked, canPick;
+    private float timePicked;
+    private boolean  canPick, isActive, isPicked;
     private Game game;
 
     public SlowGamePowerup(float cx, float cy, Game game){
@@ -15,8 +17,10 @@ public class SlowGamePowerup implements Powerup {
         this.cy = cy;
         this.game = game;
 
-        isPicked = false;
         canPick = true;
+        isActive = false;
+
+        timePicked = 0;
     }
 
     @Override
@@ -27,10 +31,50 @@ public class SlowGamePowerup implements Powerup {
     }
 
     @Override
+    public void moveDown() {
+        cy += game.moveDownSpeed;
+        if (getTop() >= game.getHeight() - EXT_PADDING){
+            canPick = false;
+        }
+    }
+
+    @Override
+    public void setActive() {
+        isActive = true;
+    }
+
+    @Override
+    public void setPicked() {
+        isPicked = true;
+        isActive = true;
+    }
+
+    @Override
+    public float getTimePicked() {
+        return timePicked;
+    }
+
+    @Override
+    public void updateTimePicked() {
+        ++timePicked;
+        if (timePicked > TIME_DURATION){
+            isActive = false;
+        }
+    }
+
+    @Override
+    public boolean isInside(float x, float y) {
+        return false;
+    }
+
+    @Override
     public void affectRateOfObstacles() { }
 
     @Override
     public boolean disableCollisions() { return false; }
+
+    @Override
+    public boolean isActive() { return isActive; }
 
     @Override
     public boolean isPicked() { return isPicked; }
@@ -52,4 +96,9 @@ public class SlowGamePowerup implements Powerup {
 
     @Override
     public float getBottom() { return cy + height / 2; }
+
+    @Override
+    public String getPowerupType() {
+        return SLOW_GAME_POWERUP;
+    }
 }
