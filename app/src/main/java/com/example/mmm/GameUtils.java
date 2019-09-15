@@ -24,6 +24,9 @@ public class GameUtils {
     public final static float MAX_SPEED = 50.0f;
     public final static float INITIAL_FRAME_RECT_SPEED = 11.0f;
     public final static float POWERUP_SPEED_OBSTACLE_SPEED_RATIO = 1.25f;
+    public final static int TRANSITION_TIME_INVISIBILITY = 5;
+    public final static int BLAST_TIME = 40;
+    public final static int BLAST_WIDTH = 200, BLAST_HEIGHT = 200;
 
     /**
      * @return Returns true or false with 50-50 probability.

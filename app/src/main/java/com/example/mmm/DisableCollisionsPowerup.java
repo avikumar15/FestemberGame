@@ -5,9 +5,9 @@ import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
 
 public class DisableCollisionsPowerup implements Powerup {
-    private final static float TIME_DURATION = 250f;
+    private final static int TIME_DURATION = 250;
     public final static float powerupHeight = 200f, powerupWidth = 200f;
-    private float timePicked;
+    private int timePicked;
     private float cx, cy;
     private boolean canPick, isActive, isPicked;
     private Game game;
@@ -42,7 +42,7 @@ public class DisableCollisionsPowerup implements Powerup {
     }
 
     @Override
-    public float getTimePicked() {
+    public int getTimePicked() {
         return timePicked;
     }
 
@@ -70,7 +70,7 @@ public class DisableCollisionsPowerup implements Powerup {
     public boolean disableCollisions() { return true; }
 
     @Override
-    public float getTimeDuration() { return TIME_DURATION; }
+    public int getTimeDuration() { return TIME_DURATION; }
 
     @Override
     public void affectGameSpeed() { }

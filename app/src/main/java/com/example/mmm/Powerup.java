@@ -6,7 +6,7 @@ public interface Powerup {
     /**
      * @return Time duration of effect of the powerup if picked.
      */
-    public float getTimeDuration();
+    public int getTimeDuration();
 
     /**
      * Effect on power-up on game speed.
@@ -46,7 +46,7 @@ public interface Powerup {
 
     public boolean isPicked();
 
-    public float getTimePicked();
+    public int getTimePicked();
 
     public void updateTimePicked();
 
