@@ -10,6 +10,7 @@ public class RotatingObstacle implements Obstacle {
     private final float obstacleRadius = 85.0f, THETA_RATE = (float) Math.PI / 50.0f;
     private float cx, cy, orbitRadius, theta;
     private boolean isClockwise, isAlive = false;
+    private boolean isInvisible = false;
     private Game game;
     // obstacleRadius -> Radius of each of the two rotating circles.
     // orbitRadius -> Radius of the circle around which the two circles orbit.
@@ -70,6 +71,21 @@ public class RotatingObstacle implements Obstacle {
 
     @Override
     public boolean isAlive() { return isAlive; }
+
+    @Override
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return isInvisible;
+    }
+
+    @Override
+    public void setInvisible() {
+        isInvisible = true;
+    }
 
     @Override
     public float getCx() { return cx; }

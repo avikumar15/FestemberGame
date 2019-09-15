@@ -11,7 +11,8 @@ public class HorizontalObstacle implements Obstacle {
     private Game game;
     private boolean isAlive;
     private boolean isMovingRight;
-     static float HORIZONTAL_MOVE_RATE = 20f;
+    private boolean isInvisible = false;
+    static float HORIZONTAL_MOVE_RATE = 20f;
     final static float obstacleHeight = 250.0f, obstacleWidth = 250.0f;
 
     public HorizontalObstacle(float cx, float cy, Game game){
@@ -85,6 +86,21 @@ public class HorizontalObstacle implements Obstacle {
 
     @Override
     public boolean isAlive() { return isAlive; }
+
+    @Override
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return isInvisible;
+    }
+
+    @Override
+    public void setInvisible() {
+        isInvisible = true;
+    }
 
     @NonNull
     @Override

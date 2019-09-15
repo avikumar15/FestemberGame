@@ -15,6 +15,7 @@ public class MutuallyAttractedObstacles implements Obstacle{
     private boolean isMovingRight;
     static float HORIZONTAL_MOVE_RATE = 5f;
     final static float obstacleHeight = 250.0f, obstacleWidth = 250.0f;
+    private boolean isInvisible = false;
 
     public MutuallyAttractedObstacles(float cx, float cy, Game game){
         this.cx = cx;
@@ -92,6 +93,21 @@ public class MutuallyAttractedObstacles implements Obstacle{
 
     @Override
     public boolean isAlive() { return isAlive; }
+
+    @Override
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return isInvisible;
+    }
+
+    @Override
+    public void setInvisible() {
+        isInvisible = true;
+    }
 
     @NonNull
     @Override

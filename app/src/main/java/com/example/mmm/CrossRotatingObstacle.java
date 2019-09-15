@@ -15,6 +15,7 @@ public class CrossRotatingObstacle implements Obstacle {
     final static float obstacleThickness = 80.0f, orbitRadius = 300.0f, obstacleCenterRadius = 90.0f;
     final static float HORIZONTAL_MOVE_RATE = 10.0f, THETA_RATE = (float) Math.PI / 45.0f;
     private boolean isAlive, isMovingRight, isClockwise, hasDoubleLines, isTranslating;
+    private boolean isInvisible = false;
     // hasDoubleLines -> Whether or not the obstacle has double lines (cross shape) or not (Single line).
     // isTranslating -> The obstacle will also move horizontally if this is set to true.
 
@@ -158,6 +159,21 @@ public class CrossRotatingObstacle implements Obstacle {
 
     @Override
     public boolean isAlive() { return isAlive; }
+
+    @Override
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return isInvisible;
+    }
+
+    @Override
+    public void setInvisible() {
+        isInvisible = true;
+    }
 
     public boolean hasDoubleLines() { return hasDoubleLines; }
 

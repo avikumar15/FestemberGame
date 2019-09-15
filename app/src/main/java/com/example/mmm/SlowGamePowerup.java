@@ -3,10 +3,12 @@ package com.example.mmm;
 import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.FRAME_SPEED_RATE;
 import static com.example.mmm.GameUtils.INITIAL_FRAME_RECT_SPEED;
+import static com.example.mmm.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
 
 public class SlowGamePowerup implements Powerup {
     private final static float TIME_DURATION = 100f;
-    private final static float height = 200f;
+    public final static float powerupHeight = 200f, powerupWidth = 200f;
     private float cx, cy;
     private float timePicked;
     private boolean  canPick, isActive, isPicked;
@@ -32,7 +34,7 @@ public class SlowGamePowerup implements Powerup {
 
     @Override
     public void moveDown() {
-        cy += game.moveDownSpeed;
+        cy += game.moveDownSpeed * POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
         if (getTop() >= game.getHeight() - EXT_PADDING){
             canPick = false;
         }
@@ -92,10 +94,10 @@ public class SlowGamePowerup implements Powerup {
     public float getCy() { return cy; }
 
     @Override
-    public float getTop() { return cy - height / 2; }
+    public float getTop() { return cy - powerupHeight / 2; }
 
     @Override
-    public float getBottom() { return cy + height / 2; }
+    public float getBottom() { return cy + powerupHeight / 2; }
 
     @Override
     public String getPowerupType() {

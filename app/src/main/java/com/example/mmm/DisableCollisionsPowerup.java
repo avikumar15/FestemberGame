@@ -2,10 +2,11 @@ package com.example.mmm;
 
 import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
 
 public class DisableCollisionsPowerup implements Powerup {
-    private final static float TIME_DURATION = 1000f;
-    private final static float powerupHeight = 200f, powerupWidth = 200f;
+    private final static float TIME_DURATION = 250f;
+    public final static float powerupHeight = 200f, powerupWidth = 200f;
     private float timePicked;
     private float cx, cy;
     private boolean canPick, isActive, isPicked;
@@ -24,7 +25,7 @@ public class DisableCollisionsPowerup implements Powerup {
 
     @Override
     public void moveDown() {
-        cy += game.moveDownSpeed;
+        cy += game.moveDownSpeed * POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
         if (getTop() >= game.getHeight() - EXT_PADDING){
             canPick = false;
         }
@@ -50,6 +51,7 @@ public class DisableCollisionsPowerup implements Powerup {
         ++timePicked;
         if (timePicked > TIME_DURATION){
             isActive = false;
+            isPicked = false;
         }
     }
 

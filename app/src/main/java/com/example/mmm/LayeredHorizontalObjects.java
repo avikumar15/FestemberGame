@@ -9,11 +9,12 @@ import static com.example.mmm.GameUtils.getRandomSign;
 
 public class LayeredHorizontalObjects implements Obstacle {
     static float HORIZONTAL_MOVE_RATE = 15f;
-    static float obstacleHeight = 270.0f, obstacleWidth = 270.0f;
+    static float obstacleHeight = 240.0f, obstacleWidth = 240.0f;
     private float cx, cy;
     private Game game;
     private boolean isAlive;
     private boolean isMovingRight;
+    private boolean isInvisible = false;
 
     public LayeredHorizontalObjects(float cx, float cy, Game game) {
         this.cx = cx;
@@ -107,6 +108,21 @@ public class LayeredHorizontalObjects implements Obstacle {
     @Override
     public boolean isAlive() {
         return isAlive;
+    }
+
+    @Override
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return isInvisible;
+    }
+
+    @Override
+    public void setInvisible() {
+        isInvisible = true;
     }
 
     @NonNull

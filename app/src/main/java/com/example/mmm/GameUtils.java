@@ -23,6 +23,7 @@ public class GameUtils {
     public final static float FRAME_SPEED_RATE = 0.01f;
     public final static float MAX_SPEED = 50.0f;
     public final static float INITIAL_FRAME_RECT_SPEED = 11.0f;
+    public final static float POWERUP_SPEED_OBSTACLE_SPEED_RATIO = 1.25f;
 
     /**
      * @return Returns true or false with 50-50 probability.

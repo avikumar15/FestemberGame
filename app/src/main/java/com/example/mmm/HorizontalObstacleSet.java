@@ -13,6 +13,7 @@ public class HorizontalObstacleSet implements Obstacle {
     final static float HORIZONTAL_MOVE_RATE = 14.0f;
     final static float obstacleHeight = 300.0f;
     float obstacleWidth;
+    private boolean isInvisible = false;
 
     public HorizontalObstacleSet(float cx, float cy, Game game){
         this.cx = cx;
@@ -102,6 +103,21 @@ public class HorizontalObstacleSet implements Obstacle {
 
     @Override
     public boolean isAlive() { return isAlive; }
+
+    @Override
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return isInvisible;
+    }
+
+    @Override
+    public void setInvisible() {
+        isInvisible = true;
+    }
 
     @Override
     public String getObstacleType() { return HORIZONTAL_OBSTACLE_SET; }

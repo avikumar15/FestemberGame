@@ -23,6 +23,13 @@ public interface Obstacle {
      */
     public boolean isInside(float x, float y);
     public boolean isAlive();
+    public void setAlive(boolean isALive);
+
+    /**
+     * Use this only if collisions are disabled through a powerup and an obstacle hit the pointer.
+     */
+    public void setInvisible();
+    public boolean isInvisible();
 
     /**
      * This depends on the logic of moving the obstacle.

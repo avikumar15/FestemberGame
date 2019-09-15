@@ -41,6 +41,7 @@ public class GamePlay extends View {
     private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint(), powerupPaint = new Paint();
     private float height, width;
     private Path gameplayPath;
+    private Path trianglePath;
     private boolean started = false, ended = false, gameOver = false;
     private Bitmap startScreen, gameOverScreen, startScreenResized, gameOverScreenResized;
     private Game game;
@@ -49,6 +50,7 @@ public class GamePlay extends View {
     private List<FrameRect> frameRects = new ArrayList<>();
     private Canvas tempCanvas;
     private Bitmap tempBitmap;
+    private int savedObstacleIndex;
 
     public GamePlay(Context context, float width, float height) {
         super(context);
@@ -90,6 +92,9 @@ public class GamePlay extends View {
         ended = false;
         gameOver = false;
         game = new Game(width, height);
+
+        trianglePath = new Path();
+        savedObstacleIndex = -1;
 
         tempBitmap = Bitmap.createBitmap((int) width, (int) height, Bitmap.Config.ARGB_8888);
         // Contents of temp canvas are drawn in drawObstacles on canvas using temp bitmap.
@@ -165,132 +170,136 @@ public class GamePlay extends View {
     private void drawObstacles(Canvas canvas) {
         List<Obstacle> obstacles = game.getObstacles();
         tempCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        for (Obstacle obstacle : obstacles) {
+        for (int i = 0; i < obstacles.size(); ++i) {
+            Obstacle obstacle = obstacles.get(i);
             // If pointer is inside a obstacle, game is over.
-            if (obstacle.isInside(fingerX, fingerY) && !game.isDisableCollisions()) {
-                setGameOver();
-                invalidate();
-                break;
-            }
-            if (obstacle.getObstacleType().equals(Obstacle.ROTATING_OBSTACLE)) {
-                RotatingObstacle rotatingObstacle = (RotatingObstacle) obstacle;
-                // Drawing two circles.
-                canvas.drawCircle(rotatingObstacle.getObstacleCx1(), rotatingObstacle.getObstacleCy1(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
-                canvas.drawCircle(rotatingObstacle.getObstacleCx2(), rotatingObstacle.getObstacleCy2(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
-            }// New Obstacle, horizontal obstacle stacked up in 3 lines with one space in the middle, which continues translating horizontally.
-            else if (obstacle.getObstacleType().equals(HORIZONTAL_LAYERED_OBSTACLE)) {
-                LayeredHorizontalObjects LhorizontalObstacle = (LayeredHorizontalObjects) obstacle;
-
-                //making layers of obstacles
-                //layer02
-                {
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 1 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+            if (obstacle.isInside(fingerX, fingerY) && !obstacle.isInvisible()) {
+                if (game.isDisableCollisions()) {
+                    obstacle.setInvisible();
+                } else {
+                    setGameOver();
+                    invalidate();
+                    break;
                 }
-                //layer01
-                {
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom(), obstaclePaint);
-
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 1 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                }
-                //layer03
-                {
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 1 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-                    canvas.drawRect(LhorizontalObstacle.getCx() - 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
-
-                }
-
-            } else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE)) {
-                HorizontalObstacle horizontalObstacle = (HorizontalObstacle) obstacle;
-                canvas.drawRect(horizontalObstacle.getLeft(), horizontalObstacle.getTop(), horizontalObstacle.getRight(), horizontalObstacle.getBottom(), obstaclePaint);
-
-            } else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE_SET)) {
-                HorizontalObstacleSet horizontalObstacleSet = (HorizontalObstacleSet) obstacle;
-                // Drawing a rectangle on the left end with width = obstacleWidth, height = obstacleHeight
-                canvas.drawRect(
-                        EXT_PADDING,
-                        horizontalObstacleSet.getTop(),
-                        horizontalObstacleSet.getObstacleWidth(),
-                        horizontalObstacleSet.getBottom(),
-                        obstaclePaint
-                );
-                // Drawing a rectangle on the right end with width = obstacleWidth, height = obstacleHeight
-                canvas.drawRect(
-                        width - horizontalObstacleSet.getObstacleWidth(),
-                        horizontalObstacleSet.getTop(),
-                        width - EXT_PADDING,
-                        horizontalObstacleSet.getBottom(),
-                        obstaclePaint
-                );
-                // Drawing a rectangle on the moving part with width = 2 * obstacleWidth, height = obstacleHeight
-                canvas.drawRect(
-                        horizontalObstacleSet.getLeft(),
-                        horizontalObstacleSet.getTop(),
-                        horizontalObstacleSet.getRight(),
-                        horizontalObstacleSet.getBottom(),
-                        obstaclePaint
-                );
             }
-            else if(obstacle.getObstacleType().equals(MUTUALLY_ATTRACTED_OBSTACLE)) {
-                MutuallyAttractedObstacles mutuallyAttractedObstacles = (MutuallyAttractedObstacles) obstacle;
-                canvas.drawRect(mutuallyAttractedObstacles.getLeft(), mutuallyAttractedObstacles.getTop(), mutuallyAttractedObstacles.getRight(), mutuallyAttractedObstacles.getBottom(), obstaclePaint);
-                canvas.drawRect(mutuallyAttractedObstacles.getLeft() + getWidth()-2*mutuallyAttractedObstacles.getCx(), mutuallyAttractedObstacles.getTop(), mutuallyAttractedObstacles.getRight()+ getWidth()-2*mutuallyAttractedObstacles.getCx(), mutuallyAttractedObstacles.getBottom(), obstaclePaint);
-                System.out.println("entered");
-            }
-            else if (obstacle.getObstacleType().equals(CROSS_ROTATING_OBSTACLE)) {
-                CrossRotatingObstacle crossRotatingObstacle = (CrossRotatingObstacle) obstacle;
-                // We draw a cross (or line if hasDoubleLines is false) in temp canvas and rotate it by an angle theta.
-                tempCanvas.save();
-                tempCanvas.rotate(
-                        crossRotatingObstacle.getTheta() * (float) (180 / Math.PI),
-                        crossRotatingObstacle.getCx(),
-                        crossRotatingObstacle.getCy()
-                );
-                tempCanvas.drawRect(
-                        crossRotatingObstacle.getLeft(),
-                        crossRotatingObstacle.getCy() - crossRotatingObstacle.getObstacleThickness() / 2,
-                        crossRotatingObstacle.getRight(),
-                        crossRotatingObstacle.getCy() + crossRotatingObstacle.getObstacleThickness() / 2,
-                        obstaclePaint
-                );
-                if (crossRotatingObstacle.hasDoubleLines()) {
-                    tempCanvas.drawRect(
-                            crossRotatingObstacle.getCx() - crossRotatingObstacle.getObstacleThickness() / 2,
-                            crossRotatingObstacle.getTop(),
-                            crossRotatingObstacle.getCx() + crossRotatingObstacle.getObstacleThickness() / 2,
-                            crossRotatingObstacle.getBottom(),
+            if (!obstacle.isInvisible()) {
+                if (obstacle.getObstacleType().equals(Obstacle.ROTATING_OBSTACLE)) {
+                    RotatingObstacle rotatingObstacle = (RotatingObstacle) obstacle;
+                    // Drawing two circles.
+                    canvas.drawCircle(rotatingObstacle.getObstacleCx1(), rotatingObstacle.getObstacleCy1(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
+                    canvas.drawCircle(rotatingObstacle.getObstacleCx2(), rotatingObstacle.getObstacleCy2(), rotatingObstacle.getObstacleRadius(), obstaclePaint);
+                }// New Obstacle, horizontal obstacle stacked up in 3 lines with one space in the middle, which continues translating horizontally.
+                else if (obstacle.getObstacleType().equals(HORIZONTAL_LAYERED_OBSTACLE)) {
+                    LayeredHorizontalObjects LhorizontalObstacle = (LayeredHorizontalObjects) obstacle;
+
+                    //making layers of obstacles
+                    //layer02
+                    {
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() + 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 1 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop(), LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getBottom() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                    }
+                    //layer01
+                    {
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getBottom(), obstaclePaint);
+
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 1 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() - LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                    }
+                    //layer03
+                    {
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(GAP_LAYERED_OBSTACLE + LhorizontalObstacle.getCx() + 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() + 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 1 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 3 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 5 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 7 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+                        canvas.drawRect(LhorizontalObstacle.getCx() - 11 * LhorizontalObstacle.getObstacleWidth() / 2f, LhorizontalObstacle.getTop() + LhorizontalObstacle.getObstacleHeight(), LhorizontalObstacle.getCx() - 9 * LhorizontalObstacle.getObstacleWidth() / 2f - GAP_LAYERED_OBSTACLE, LhorizontalObstacle.getTop() + 2 * LhorizontalObstacle.getObstacleHeight() - GAP_LAYERED_OBSTACLE, obstaclePaint);
+
+                    }
+
+                } else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE)) {
+                    HorizontalObstacle horizontalObstacle = (HorizontalObstacle) obstacle;
+                    canvas.drawRect(horizontalObstacle.getLeft(), horizontalObstacle.getTop(), horizontalObstacle.getRight(), horizontalObstacle.getBottom(), obstaclePaint);
+
+                } else if (obstacle.getObstacleType().equals(HORIZONTAL_OBSTACLE_SET)) {
+                    HorizontalObstacleSet horizontalObstacleSet = (HorizontalObstacleSet) obstacle;
+                    // Drawing a rectangle on the left end with width = obstacleWidth, height = obstacleHeight
+                    canvas.drawRect(
+                            EXT_PADDING,
+                            horizontalObstacleSet.getTop(),
+                            horizontalObstacleSet.getObstacleWidth(),
+                            horizontalObstacleSet.getBottom(),
                             obstaclePaint
                     );
+                    // Drawing a rectangle on the right end with width = obstacleWidth, height = obstacleHeight
+                    canvas.drawRect(
+                            width - horizontalObstacleSet.getObstacleWidth(),
+                            horizontalObstacleSet.getTop(),
+                            width - EXT_PADDING,
+                            horizontalObstacleSet.getBottom(),
+                            obstaclePaint
+                    );
+                    // Drawing a rectangle on the moving part with width = 2 * obstacleWidth, height = obstacleHeight
+                    canvas.drawRect(
+                            horizontalObstacleSet.getLeft(),
+                            horizontalObstacleSet.getTop(),
+                            horizontalObstacleSet.getRight(),
+                            horizontalObstacleSet.getBottom(),
+                            obstaclePaint
+                    );
+                } else if (obstacle.getObstacleType().equals(MUTUALLY_ATTRACTED_OBSTACLE)) {
+                    MutuallyAttractedObstacles mutuallyAttractedObstacles = (MutuallyAttractedObstacles) obstacle;
+                    canvas.drawRect(mutuallyAttractedObstacles.getLeft(), mutuallyAttractedObstacles.getTop(), mutuallyAttractedObstacles.getRight(), mutuallyAttractedObstacles.getBottom(), obstaclePaint);
+                    canvas.drawRect(mutuallyAttractedObstacles.getLeft() + getWidth() - 2 * mutuallyAttractedObstacles.getCx(), mutuallyAttractedObstacles.getTop(), mutuallyAttractedObstacles.getRight() + getWidth() - 2 * mutuallyAttractedObstacles.getCx(), mutuallyAttractedObstacles.getBottom(), obstaclePaint);
+                } else if (obstacle.getObstacleType().equals(CROSS_ROTATING_OBSTACLE)) {
+                    CrossRotatingObstacle crossRotatingObstacle = (CrossRotatingObstacle) obstacle;
+                    // We draw a cross (or line if hasDoubleLines is false) in temp canvas and rotate it by an angle theta.
+                    tempCanvas.save();
+                    tempCanvas.rotate(
+                            crossRotatingObstacle.getTheta() * (float) (180 / Math.PI),
+                            crossRotatingObstacle.getCx(),
+                            crossRotatingObstacle.getCy()
+                    );
+                    tempCanvas.drawRect(
+                            crossRotatingObstacle.getLeft(),
+                            crossRotatingObstacle.getCy() - crossRotatingObstacle.getObstacleThickness() / 2,
+                            crossRotatingObstacle.getRight(),
+                            crossRotatingObstacle.getCy() + crossRotatingObstacle.getObstacleThickness() / 2,
+                            obstaclePaint
+                    );
+                    if (crossRotatingObstacle.hasDoubleLines()) {
+                        tempCanvas.drawRect(
+                                crossRotatingObstacle.getCx() - crossRotatingObstacle.getObstacleThickness() / 2,
+                                crossRotatingObstacle.getTop(),
+                                crossRotatingObstacle.getCx() + crossRotatingObstacle.getObstacleThickness() / 2,
+                                crossRotatingObstacle.getBottom(),
+                                obstaclePaint
+                        );
+                    }
+                    // Drawing a small circle at the center of the obstacle.
+                    tempCanvas.drawCircle(crossRotatingObstacle.getCx(), crossRotatingObstacle.getCy(), crossRotatingObstacle.getObstacleCenterRadius(), obstaclePaint);
+                    tempCanvas.restore();
                 }
-                // Drawing a small circle at the center of the obstacle.
-                tempCanvas.drawCircle(crossRotatingObstacle.getCx(), crossRotatingObstacle.getCy(), crossRotatingObstacle.getObstacleCenterRadius(), obstaclePaint);
-                tempCanvas.restore();
             }
         }
         for (Powerup powerup : game.getPowerups()){
@@ -313,6 +322,7 @@ public class GamePlay extends View {
         }
         // Drawing the contents of temp canvas on original canvas by using temp bitmap.
         canvas.drawBitmap(tempBitmap, 0, 0, backgroundPaint);
+
         game.update();
         invalidate();
     }
@@ -335,34 +345,47 @@ public class GamePlay extends View {
                     brush
             );
             float x, y;
+            trianglePath.reset();
             for (float theta = 0; theta < 2 * (float) Math.PI; theta += (float) Math.PI / 4){
                 float theta2 = theta + (float) Math.PI / 10;
                 x = fingerX + expandedPointerRadius * 1.4f * (float) (Math.cos(theta) + Math.cos(theta2)) / 2;
                 y = fingerY + expandedPointerRadius * 1.4f * (float) (Math.sin(theta) + Math.sin(theta2)) / 2;
 
-                canvas.drawLine(
-                        fingerX + expandedPointerRadius * (float) Math.cos(theta),
-                        fingerY + expandedPointerRadius * (float) Math.sin(theta),
-                        x,
-                        y,
-                        brush
-                );
+                trianglePath.moveTo(fingerX + expandedPointerRadius * (float) Math.cos(theta),
+                        fingerY + expandedPointerRadius * (float) Math.sin(theta));
 
-                canvas.drawLine(
-                        x,
-                        y,
-                        fingerX + expandedPointerRadius * (float) Math.cos(theta2),
-                        fingerY + expandedPointerRadius * (float) Math.sin(theta2),
-                        brush
-                );
+                trianglePath.lineTo(x, y);
 
-                canvas.drawLine(
-                        fingerX + expandedPointerRadius * (float) Math.cos(theta2),
-                        fingerY + expandedPointerRadius * (float) Math.sin(theta2),
-                        fingerX + expandedPointerRadius * (float) Math.cos(theta),
-                        fingerY + expandedPointerRadius * (float) Math.sin(theta),
-                        brush
-                );
+                trianglePath.lineTo(fingerX + expandedPointerRadius * (float) Math.cos(theta2),
+                        fingerY + expandedPointerRadius * (float) Math.sin(theta2));
+
+                trianglePath.close();
+
+                canvas.drawPath(trianglePath, brush);
+
+//                canvas.drawLine(
+//                        fingerX + expandedPointerRadius * (float) Math.cos(theta),
+//                        fingerY + expandedPointerRadius * (float) Math.sin(theta),
+//                        x,
+//                        y,
+//                        brush
+//                );
+//
+//                canvas.drawLine(
+//                        x,
+//                        y,
+//                        fingerX + expandedPointerRadius * (float) Math.cos(theta2),
+//                        fingerY + expandedPointerRadius * (float) Math.sin(theta2),
+//                        brush
+//                );
+//
+//                canvas.drawLine(
+//                        fingerX + expandedPointerRadius * (float) Math.cos(theta2),
+//                        fingerY + expandedPointerRadius * (float) Math.sin(theta2),
+//                        fingerX + expandedPointerRadius * (float) Math.cos(theta),
+//                        fingerY + expandedPointerRadius * (float) Math.sin(theta),
+//                        brush
+//                );
             }
         }
     }
@@ -443,7 +466,7 @@ public class GamePlay extends View {
                 }
                 // If the game is running and the player does anything other than action move, it will result in game over.
                 if (!gameOver) {
-                    setGameOver();
+//                    setGameOver();
                     invalidate();
                     return false;
                 }

@@ -31,7 +31,7 @@ public class Game {
     public float moveDownSpeed;
     public float frameRectSpeed;  // Change this to adjust moving speed of background. This is just for the background
     private boolean disableCollisions;
-    private float powerUpProbability = 0.005f; // Probability of getting a powerup randomly in the game.
+    private float powerUpProbability = 0.004f; // Probability of getting a powerup randomly in the game.
     private int maxPowerupsRate = 1;
 
     public Game(float width, float height){
@@ -97,17 +97,17 @@ public class Game {
             case DISABLE_COLLISIONS_POWERUP:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
-                powerup = new DisableCollisionsPowerup(cx, EXT_PADDING, Game.this);
+                powerup = new DisableCollisionsPowerup(cx, EXT_PADDING - DisableCollisionsPowerup.powerupHeight / 2, Game.this);
                 break;
             case SLOW_GAME_POWERUP:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
-                powerup = new SlowGamePowerup(cx, EXT_PADDING, Game.this);
+                powerup = new SlowGamePowerup(cx, EXT_PADDING - SlowGamePowerup.powerupHeight / 2, Game.this);
                 break;
             default:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
-                powerup = new SlowGamePowerup(cx, EXT_PADDING, Game.this);
+                powerup = new SlowGamePowerup(cx, EXT_PADDING - DisableCollisionsPowerup.powerupHeight / 2, Game.this);
                 break;
         }
         powerups.add(powerup);
@@ -148,22 +148,25 @@ public class Game {
 
         //Powerups part
 
-        boolean flag = false;
         int i;
+        int nonActivePowerups = 0;
         for (i = 0; i < powerups.size(); ++i){
             Powerup powerup = powerups.get(i);
             powerup.moveDown();
-            if (powerup.isActive()){
+            if (powerup.isActive() && powerup.isPicked()){
                 powerup.updateTimePicked();
+//                Log.d(TAG, "Powerup time: " + powerup.getTimePicked());
             }
-            if (!disableCollisions && powerup.disableCollisions() && powerup.isActive()){
-                flag = true;
+            if (!disableCollisions && powerup.disableCollisions() && powerup.isActive() && powerup.isPicked()){
+                Log.d(TAG, "Can disable collisions");
+                disableCollisions = true;
+            }
+            else if (disableCollisions && powerup.disableCollisions() && (!powerup.isPicked() || !powerup.isActive())){
+                ++nonActivePowerups;
             }
         }
-        if(flag) {
-            disableCollisions = true;
-        }
-        else if (disableCollisions && i == powerups.size() - 1){
+        if (disableCollisions && nonActivePowerups == powerups.size()){
+            Log.d(TAG, "Enabling collisions");
             disableCollisions = false;
         }
 
@@ -171,10 +174,9 @@ public class Game {
             Log.d(TAG, "Powerups size: " + powerups.size() + ", can generate powerups");
             addPowerup();
         }
-        if (powerups.size() > 0 && !powerups.get(0).canPick()){
+        if (powerups.size() > 0 && !powerups.get(0).canPick() && (!powerups.get(0).isPicked() || powerups.get(0).isPicked() && !powerups.get(0).isActive())){
             powerups.remove(0);
         }
-
     }
 
     public boolean isDisableCollisions() { return disableCollisions; }
