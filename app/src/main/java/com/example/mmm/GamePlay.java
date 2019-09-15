@@ -301,6 +301,8 @@ public class GamePlay extends View {
                     tempCanvas.restore();
                 }
             }
+            obstacle.update();
+            obstacle.moveDown();
         }
         for (Powerup powerup : game.getPowerups()){
             if (!powerup.isPicked()) {
@@ -466,7 +468,7 @@ public class GamePlay extends View {
                 }
                 // If the game is running and the player does anything other than action move, it will result in game over.
                 if (!gameOver) {
-//                    setGameOver();
+                    setGameOver();
                     invalidate();
                     return false;
                 }

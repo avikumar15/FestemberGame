@@ -37,7 +37,7 @@ public class Game {
     public Game(float width, float height){
         this.width = width;
         this.height = height;
-        thresholdHeight = height * 1.0f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
+        thresholdHeight = height * 0.75f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
         minDimension = Math.min(width, height);
         score = 0;
         frameRectSpeed = INITIAL_FRAME_RECT_SPEED;
@@ -129,10 +129,10 @@ public class Game {
             moveDownSpeed += FRAME_SPEED_RATE;
         }
         score += SCORE_INCREASE_RATE;
-        for (Obstacle obstacle : obstacles){
-            obstacle.update();
-            obstacle.moveDown();
-        }
+//        for (Obstacle obstacle : obstacles){
+//            obstacle.update();
+//            obstacle.moveDown();
+//        }
         if (obstacles.size() == 0){
             addObstacle();
         }
