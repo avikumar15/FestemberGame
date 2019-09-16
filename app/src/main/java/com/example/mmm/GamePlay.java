@@ -26,6 +26,7 @@ import static com.example.mmm.GameUtils.BLAST_WIDTH;
 import static com.example.mmm.GameUtils.EXT_PADDING;
 import static com.example.mmm.GameUtils.GAP_LAYERED_OBSTACLE;
 import static com.example.mmm.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.GameUtils.POWERUP_BAR_HEIGHT;
 import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
 import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
@@ -43,6 +44,7 @@ public class GamePlay extends View {
     float fingerX, fingerY;
     Context mContext;
     private Paint obstaclePaint = new Paint(), brush = new Paint(), paint = new Paint(), backgroundPaint = new Paint(), textPaint = new Paint(), powerupPaint = new Paint();
+    private Paint powerupBarFillPaint = new Paint(), powerupBarStrokePaint = new Paint();
     private float height, width;
     private Path gameplayPath;
     private Path trianglePath;
@@ -78,7 +80,12 @@ public class GamePlay extends View {
         obstaclePaint.setColor(getResources().getColor(R.color.colorAccent));
         powerupPaint.setColor(getResources().getColor(R.color.colorPrimary));
         textPaint.setColor(getResources().getColor(R.color.white));
+        powerupBarFillPaint.setColor(getResources().getColor(R.color.white));
+        powerupBarStrokePaint.setColor(getResources().getColor(R.color.white));
         textPaint.setTextSize(80.0f);
+
+        powerupBarStrokePaint.setStyle(Paint.Style.STROKE);
+        powerupBarStrokePaint.setStrokeWidth(10.0f);
 
         startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.start_screen_min);
         gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_over_screen_min);
@@ -231,6 +238,7 @@ public class GamePlay extends View {
                 transitionTime = 0;
             }
         }
+        int nonActivePowerups = 0;
         for (Powerup powerup : game.getPowerups()){
             if (!powerup.isPicked()) {
                 if (powerup.isInside(fingerX, fingerY)) {
@@ -248,9 +256,54 @@ public class GamePlay extends View {
                         powerupPaint
                 );
             }
+
+            powerup.moveDown();
+            if (powerup.isActive() && powerup.isPicked()){
+                powerup.updateTimePicked();
+                if (powerup.disableCollisions() && (DisableCollisionsPowerup.TIME_DURATION - powerup.getTimePicked() < game.getDisableCollisionsTime() || game.getDisableCollisionsTime() == 0)){
+                    game.setDisableCollisionsTime(DisableCollisionsPowerup.TIME_DURATION - powerup.getTimePicked());
+                }
+//                Log.d(TAG, "Powerup time: " + powerup.getTimePicked());
+            }
+            if (!game.isDisableCollisions() && powerup.disableCollisions() && powerup.isActive() && powerup.isPicked()){
+                Log.d(TAG, "Can disable collisions");
+                game.setDisableCollisions(true);
+            }
+            else if (game.isDisableCollisions() && powerup.disableCollisions() && (!powerup.isPicked() || !powerup.isActive())){
+                ++nonActivePowerups;
+            }
+        }
+        if (game.isDisableCollisions() && nonActivePowerups == game.getPowerups().size()){
+            Log.d(TAG, "Enabling collisions");
+            game.setDisableCollisions(false);
+            game.setDisableCollisionsTime(0);
         }
         // Drawing the contents of temp canvas on original canvas by using temp bitmap.
         canvas.drawBitmap(tempBitmap, 0, 0, backgroundPaint);
+
+        if (game.isDisableCollisions()){
+//            canvas.drawRect(
+//                    EXT_PADDING * 1.5f,
+//                    EXT_PADDING * 1.5f,
+//                    width - EXT_PADDING * 1.5f,
+//                    EXT_PADDING * 1.5f + POWERUP_BAR_HEIGHT,
+//                    backgroundPaint
+//            );
+            canvas.drawRect(
+                    EXT_PADDING * 1.5f,
+                    EXT_PADDING * 1.5f,
+                    width - EXT_PADDING * 1.5f,
+                    EXT_PADDING * 1.5f + POWERUP_BAR_HEIGHT,
+                    powerupBarStrokePaint
+            );
+            canvas.drawRect(
+                    EXT_PADDING * 1.5f,
+                    EXT_PADDING * 1.5f,
+                    EXT_PADDING * 1.5f + (width - 2 * EXT_PADDING * 1.5f) * game.getDisableCollisionsTime() * 1.0f / DisableCollisionsPowerup.TIME_DURATION,
+                    EXT_PADDING * 1.5f + POWERUP_BAR_HEIGHT,
+                    powerupBarFillPaint
+            );
+        }
 
         game.update();
         invalidate();

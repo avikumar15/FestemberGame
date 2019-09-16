@@ -5,7 +5,7 @@ import static com.example.mmm.GameUtils.POINTER_RADIUS;
 import static com.example.mmm.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
 
 public class DisableCollisionsPowerup implements Powerup {
-    private final static int TIME_DURATION = 250;
+    public final static int TIME_DURATION = 250;
     public final static float powerupHeight = 200f, powerupWidth = 200f;
     private int timePicked;
     private float cx, cy;

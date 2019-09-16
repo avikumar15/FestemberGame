@@ -33,6 +33,7 @@ public class Game {
     private boolean disableCollisions;
     private float powerUpProbability = 0.004f; // Probability of getting a powerup randomly in the game.
     private int maxPowerupsRate = 1;
+    private int disableCollisionsTime = 0;
 
     public Game(float width, float height){
         this.width = width;
@@ -146,30 +147,6 @@ public class Game {
             obstacles.remove(0);
         }
 
-        //Powerups part
-
-        int i;
-        int nonActivePowerups = 0;
-        for (i = 0; i < powerups.size(); ++i){
-            Powerup powerup = powerups.get(i);
-            powerup.moveDown();
-            if (powerup.isActive() && powerup.isPicked()){
-                powerup.updateTimePicked();
-//                Log.d(TAG, "Powerup time: " + powerup.getTimePicked());
-            }
-            if (!disableCollisions && powerup.disableCollisions() && powerup.isActive() && powerup.isPicked()){
-                Log.d(TAG, "Can disable collisions");
-                disableCollisions = true;
-            }
-            else if (disableCollisions && powerup.disableCollisions() && (!powerup.isPicked() || !powerup.isActive())){
-                ++nonActivePowerups;
-            }
-        }
-        if (disableCollisions && nonActivePowerups == powerups.size()){
-            Log.d(TAG, "Enabling collisions");
-            disableCollisions = false;
-        }
-
         if (getRandomSignProbability(powerUpProbability) && powerups.size() < maxPowerupsRate){
             Log.d(TAG, "Powerups size: " + powerups.size() + ", can generate powerups");
             addPowerup();
@@ -180,6 +157,8 @@ public class Game {
     }
 
     public boolean isDisableCollisions() { return disableCollisions; }
+
+    public void setDisableCollisions(boolean disableCollisions) { this.disableCollisions = disableCollisions; }
 
     /**
      * This function was not used. Instead directly the check was performed in drawObstacles in GamePlay.
@@ -215,4 +194,8 @@ public class Game {
     public float getWidth() {
         return width;
     }
+
+    public void setDisableCollisionsTime(int disableCollisionsTime) { this.disableCollisionsTime = disableCollisionsTime; }
+
+    public int getDisableCollisionsTime() { return disableCollisionsTime; }
 }

@@ -27,6 +27,7 @@ public class GameUtils {
     public final static int TRANSITION_TIME_INVISIBILITY = 5;
     public final static int BLAST_TIME = 40;
     public final static int BLAST_WIDTH = 200, BLAST_HEIGHT = 200;
+    public final static int POWERUP_BAR_HEIGHT = 80;
 
     /**
      * @return Returns true or false with 50-50 probability.
