@@ -1,15 +1,17 @@
-package com.example.mmm;
+package com.example.mmm.game.obstacles;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.GAP_LAYERED_OBSTACLE;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.getRandomSign;
+import com.example.mmm.game.Game;
+
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.GAP_LAYERED_OBSTACLE;
+import static com.example.mmm.game.utils.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.game.utils.GameUtils.getRandomSign;
 
 public class LayeredHorizontalObjects implements Obstacle {
     static float HORIZONTAL_MOVE_RATE = 15f;
-    static float obstacleHeight = 240.0f, obstacleWidth = 240.0f;
+    public static float obstacleHeight = 240.0f, obstacleWidth = 240.0f;
     private float cx, cy;
     private Game game;
     private boolean isAlive;

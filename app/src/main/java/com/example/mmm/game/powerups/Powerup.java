@@ -1,4 +1,4 @@
-package com.example.mmm;
+package com.example.mmm.game.powerups;
 
 public interface Powerup {
     public final static String SLOW_GAME_POWERUP = "SlowGamePowerup", DISABLE_COLLISIONS_POWERUP = "DisableCollisionsPowerup";

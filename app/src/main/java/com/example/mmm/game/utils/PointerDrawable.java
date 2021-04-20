@@ -1,4 +1,4 @@
-package com.example.mmm;
+package com.example.mmm.game.utils;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -34,8 +34,7 @@ public class PointerDrawable extends View {
     }
 
     @Override
-    public void onDraw(Canvas canvas)
-    {
+    public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         pointerExtensionPaint.setAlpha(10);

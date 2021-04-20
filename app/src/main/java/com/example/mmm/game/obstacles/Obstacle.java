@@ -1,4 +1,4 @@
-package com.example.mmm;
+package com.example.mmm.game.obstacles;
 
 public interface Obstacle {
     public final static String ROTATING_OBSTACLE = "RotatingObstacle", HORIZONTAL_OBSTACLE = "HorizontalObstacle", CROSS_ROTATING_OBSTACLE = "CrossRotatingObstacle", HORIZONTAL_OBSTACLE_SET = "HorizontalObstacleSet", HORIZONTAL_LAYERED_OBSTACLE = "LayeredHorizontalObjects", MUTUALLY_ATTRACTED_OBSTACLE="MutuallyAttractedObstacles";

@@ -1,10 +1,14 @@
-package com.example.mmm;
+package com.example.mmm.game.obstacles;
 
-import android.support.annotation.NonNull;
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.distance;
-import static com.example.mmm.GameUtils.getRandomSign;
+
+import androidx.annotation.NonNull;
+
+import com.example.mmm.game.Game;
+
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.game.utils.GameUtils.distance;
+import static com.example.mmm.game.utils.GameUtils.getRandomSign;
 
 public class RotatingObstacle implements Obstacle {
     private final float obstacleRadius = 85.0f, THETA_RATE = (float) Math.PI / 50.0f;

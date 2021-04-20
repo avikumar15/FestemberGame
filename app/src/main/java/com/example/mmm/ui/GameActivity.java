@@ -1,23 +1,18 @@
-package com.example.mmm;
+package com.example.mmm.ui;
 
 import android.content.res.Resources;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.mmm.game.GamePlay;
+import com.example.mmm.R;
+
+public class GameActivity extends AppCompatActivity {
 
     GamePlay gamePlay;
     FrameLayout frameLayout;
-    LinearLayoutManager layoutManager;
-
 
     final float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     final float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels ;
@@ -28,10 +23,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
 
         gamePlay = new GamePlay(this, screenWidth, screenHeight);
-        frameLayout = (FrameLayout) findViewById(R.id.GameBackground);
+        frameLayout = findViewById(R.id.GameBackground);
+
         frameLayout.addView(gamePlay);
     }
 }

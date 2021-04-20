@@ -1,27 +1,27 @@
-package com.example.mmm;
+package com.example.mmm.game.obstacles;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.getRandomSign;
+import com.example.mmm.game.Game;
 
-public class MutuallyAttractedObstacles implements Obstacle{
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.game.utils.GameUtils.getRandomSign;
 
+public class HorizontalObstacle implements Obstacle {
     private float cx, cy;
-    private float acceleartionFactor;
     private Game game;
     private boolean isAlive;
     private boolean isMovingRight;
-    static float HORIZONTAL_MOVE_RATE = 5f;
-    final static float obstacleHeight = 250.0f, obstacleWidth = 250.0f;
     private boolean isInvisible = false;
+    static float HORIZONTAL_MOVE_RATE = 30f;
+    public final static float obstacleHeight = 250.0f, obstacleWidth = 250.0f;
 
-    public MutuallyAttractedObstacles(float cx, float cy, Game game){
+    public HorizontalObstacle(float cx, float cy, Game game){
         this.cx = cx;
         this.cy = cy;
         this.game = game;
-        acceleartionFactor=0;
+
         /* Initially the obstacle is alive.
            This goes false as soon as obstacle crosses the screen in y direction.
         */
@@ -31,7 +31,7 @@ public class MutuallyAttractedObstacles implements Obstacle{
 
     @Override
     public String getObstacleType() {
-        return MUTUALLY_ATTRACTED_OBSTACLE;
+        return HORIZONTAL_OBSTACLE;
     }
 
     @Override
@@ -62,32 +62,27 @@ public class MutuallyAttractedObstacles implements Obstacle{
     public void update() {
         // Horizontal translation motion
         if (isMovingRight){
-            cx += HORIZONTAL_MOVE_RATE + acceleartionFactor++;
+            cx += HORIZONTAL_MOVE_RATE;
         } else{
-            cx -= HORIZONTAL_MOVE_RATE*4;
+            cx -= HORIZONTAL_MOVE_RATE;
         }
 
         // Horizontal bounce action if pointer goes to either end, by changing isMovingRight
         if (cx <= EXT_PADDING + obstacleWidth / 2.0f){
             isMovingRight = true;
         }
-        else if (cx >= game.getWidth()/2f - EXT_PADDING - obstacleWidth / 2.0f){
+        else if (cx >= game.getWidth() - EXT_PADDING - obstacleWidth / 2.0f){
             isMovingRight = false;
-            acceleartionFactor=0;
         }
     }
 
     @Override
     public boolean isInside(float x, float y) {
         return (
-                (x >= cx - obstacleWidth/2f - POINTER_RADIUS &&
-                        x <= cx + obstacleWidth/2f + POINTER_RADIUS &&
-                        y >= cy - obstacleHeight/2f - POINTER_RADIUS &&
-                        y <= cy + obstacleHeight/2f + POINTER_RADIUS) ||
-                        (x >= cx - obstacleWidth/2f - POINTER_RADIUS + game.getWidth()-2*cx &&
-                        x <= cx + obstacleWidth/2f + POINTER_RADIUS + game.getWidth()-2*cx &&
-                        y >= cy - obstacleHeight/2f - POINTER_RADIUS &&
-                        y <= cy + obstacleHeight/2f + POINTER_RADIUS)
+                x >= cx - obstacleWidth/2f - POINTER_RADIUS &&
+                x <= cx + obstacleWidth/2f + POINTER_RADIUS &&
+                y >= cy - obstacleHeight/2f - POINTER_RADIUS &&
+                y <= cy + obstacleHeight/2f + POINTER_RADIUS
         );
     }
 

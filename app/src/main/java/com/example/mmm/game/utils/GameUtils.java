@@ -1,15 +1,15 @@
-package com.example.mmm;
+package com.example.mmm.game.utils;
 
 import java.util.Random;
 
-import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
-import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
-import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
-import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
-import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
-import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
-import static com.example.mmm.Powerup.DISABLE_COLLISIONS_POWERUP;
-import static com.example.mmm.Powerup.SLOW_GAME_POWERUP;
+import static com.example.mmm.game.obstacles.Obstacle.CROSS_ROTATING_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.HORIZONTAL_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.HORIZONTAL_OBSTACLE_SET;
+import static com.example.mmm.game.obstacles.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.ROTATING_OBSTACLE;
+import static com.example.mmm.game.powerups.Powerup.DISABLE_COLLISIONS_POWERUP;
+import static com.example.mmm.game.powerups.Powerup.SLOW_GAME_POWERUP;
 
 public class GameUtils {
     public final static float EXT_PADDING = 25.0f;

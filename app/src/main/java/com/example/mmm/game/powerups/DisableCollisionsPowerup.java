@@ -1,8 +1,10 @@
-package com.example.mmm;
+package com.example.mmm.game.powerups;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
+import com.example.mmm.game.Game;
+
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.game.utils.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
 
 public class DisableCollisionsPowerup implements Powerup {
     public final static int TIME_DURATION = 250;

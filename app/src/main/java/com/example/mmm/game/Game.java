@@ -1,26 +1,36 @@
-package com.example.mmm;
+package com.example.mmm.game;
 
 import android.util.Log;
+
+import com.example.mmm.game.obstacles.CrossRotatingObstacle;
+import com.example.mmm.game.obstacles.HorizontalObstacle;
+import com.example.mmm.game.obstacles.HorizontalObstacleSet;
+import com.example.mmm.game.obstacles.LayeredHorizontalObjects;
+import com.example.mmm.game.obstacles.MutuallyAttractedObstacles;
+import com.example.mmm.game.obstacles.Obstacle;
+import com.example.mmm.game.obstacles.RotatingObstacle;
+import com.example.mmm.game.powerups.DisableCollisionsPowerup;
+import com.example.mmm.game.powerups.Powerup;
+import com.example.mmm.game.powerups.SlowGamePowerup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.FRAME_SPEED_RATE;
-import static com.example.mmm.GameUtils.INITIAL_FRAME_RECT_SPEED;
-import static com.example.mmm.GameUtils.MAX_SPEED;
-import static com.example.mmm.GameUtils.SCORE_EACH_OBSTACLE;
-import static com.example.mmm.GameUtils.SCORE_INCREASE_RATE;
-import static com.example.mmm.GameUtils.getRandomObstacleType;
-import static com.example.mmm.GameUtils.getRandomSignProbability;
-import static com.example.mmm.Obstacle.CROSS_ROTATING_OBSTACLE;
-import static com.example.mmm.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
-import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE;
-import static com.example.mmm.Obstacle.HORIZONTAL_OBSTACLE_SET;
-import static com.example.mmm.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
-import static com.example.mmm.Obstacle.ROTATING_OBSTACLE;
-import static com.example.mmm.Powerup.DISABLE_COLLISIONS_POWERUP;
-import static com.example.mmm.Powerup.SLOW_GAME_POWERUP;
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.FRAME_SPEED_RATE;
+import static com.example.mmm.game.utils.GameUtils.INITIAL_FRAME_RECT_SPEED;
+import static com.example.mmm.game.utils.GameUtils.MAX_SPEED;
+import static com.example.mmm.game.utils.GameUtils.SCORE_EACH_OBSTACLE;
+import static com.example.mmm.game.utils.GameUtils.SCORE_INCREASE_RATE;
+import static com.example.mmm.game.utils.GameUtils.getRandomObstacleType;
+import static com.example.mmm.game.utils.GameUtils.getRandomSignProbability;
+import static com.example.mmm.game.obstacles.Obstacle.CROSS_ROTATING_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.HORIZONTAL_LAYERED_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.HORIZONTAL_OBSTACLE_SET;
+import static com.example.mmm.game.obstacles.Obstacle.MUTUALLY_ATTRACTED_OBSTACLE;
+import static com.example.mmm.game.obstacles.Obstacle.ROTATING_OBSTACLE;
+import static com.example.mmm.game.powerups.Powerup.DISABLE_COLLISIONS_POWERUP;
+import static com.example.mmm.game.powerups.Powerup.SLOW_GAME_POWERUP;
 
 public class Game {
     private float width, height, minDimension, score;
@@ -31,19 +41,23 @@ public class Game {
     public float moveDownSpeed;
     public float frameRectSpeed;  // Change this to adjust moving speed of background. This is just for the background
     private boolean disableCollisions;
-    private float powerUpProbability = 0.004f; // Probability of getting a powerup randomly in the game.
+    private float powerUpProbability = 0.04f; // Probability of getting a powerup randomly in the game.
     private int maxPowerupsRate = 1;
     private int disableCollisionsTime = 0;
 
     public Game(float width, float height){
         this.width = width;
         this.height = height;
+
         thresholdHeight = height * 0.75f; // If the topmost obstacle crosses this specified height, an obstacle would be generated.
         minDimension = Math.min(width, height);
         score = 0;
+
         frameRectSpeed = INITIAL_FRAME_RECT_SPEED;
         moveDownSpeed = INITIAL_FRAME_RECT_SPEED;
+
         disableCollisions = false;
+
         addObstacle();
     }
 
@@ -58,11 +72,7 @@ public class Game {
             case ROTATING_OBSTACLE:
                 obstacle = new RotatingObstacle(width/2, EXT_PADDING, minDimension * 0.33f, Game.this);
                 break;
-            case HORIZONTAL_OBSTACLE:
-                cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
-                // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
-                obstacle = new HorizontalObstacle(cx, EXT_PADDING, Game.this);
-                break;
+            // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth
             case CROSS_ROTATING_OBSTACLE:
                 obstacle = new CrossRotatingObstacle(width / 2, EXT_PADDING, Game.this);
                 break;
@@ -78,6 +88,7 @@ public class Game {
                 obstacle = new MutuallyAttractedObstacles(width/2 - MutuallyAttractedObstacles.obstacleWidth/2f, EXT_PADDING, Game.this);
                 break;
 
+            // also HORIZONTAL_OBSTACLE.
             default:
                 cx = EXT_PADDING + HorizontalObstacle.obstacleWidth + (width - 2 * EXT_PADDING - HorizontalObstacle.obstacleWidth) * (float) Math.random();
                 // cx -> random value from padding+obstacleWidth to width-padding-obstacleWidth

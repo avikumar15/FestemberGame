@@ -1,4 +1,6 @@
-package com.example.mmm;
+package com.example.mmm.game.utils;
+
+import com.example.mmm.game.Game;
 
 public class FrameRect {
     private float top, bottom;

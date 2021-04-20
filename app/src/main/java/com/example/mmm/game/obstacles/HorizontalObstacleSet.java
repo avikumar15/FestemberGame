@@ -1,18 +1,20 @@
-package com.example.mmm;
+package com.example.mmm.game.obstacles;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.getRandomSign;
+import com.example.mmm.game.Game;
+
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.game.utils.GameUtils.getRandomSign;
 
 public class HorizontalObstacleSet implements Obstacle {
     private Game game;
     private float cx, cy;
     private boolean isAlive, isMovingRight;
     final static float HORIZONTAL_MOVE_RATE = 14.0f;
-    final static float obstacleHeight = 300.0f;
-    float obstacleWidth;
+    public final static float obstacleHeight = 300.0f;
+    public float obstacleWidth;
     private boolean isInvisible = false;
 
     public HorizontalObstacleSet(float cx, float cy, Game game){

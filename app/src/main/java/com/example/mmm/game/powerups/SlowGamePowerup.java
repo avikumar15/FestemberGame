@@ -1,10 +1,11 @@
-package com.example.mmm;
+package com.example.mmm.game.powerups;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.FRAME_SPEED_RATE;
-import static com.example.mmm.GameUtils.INITIAL_FRAME_RECT_SPEED;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
+import com.example.mmm.game.Game;
+
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.FRAME_SPEED_RATE;
+import static com.example.mmm.game.utils.GameUtils.INITIAL_FRAME_RECT_SPEED;
+import static com.example.mmm.game.utils.GameUtils.POWERUP_SPEED_OBSTACLE_SPEED_RATIO;
 
 public class SlowGamePowerup implements Powerup {
     private final static int TIME_DURATION = 250;

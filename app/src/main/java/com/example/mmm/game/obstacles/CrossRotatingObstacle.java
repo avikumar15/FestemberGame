@@ -1,19 +1,18 @@
-package com.example.mmm;
+package com.example.mmm.game.obstacles;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.mmm.game.Game;
 
-import static com.example.mmm.GameUtils.EXT_PADDING;
-import static com.example.mmm.GameUtils.POINTER_RADIUS;
-import static com.example.mmm.GameUtils.distance;
-import static com.example.mmm.GameUtils.getRandomSign;
-import static com.example.mmm.GameUtils.getRandomSignProbability;
+import static com.example.mmm.game.utils.GameUtils.EXT_PADDING;
+import static com.example.mmm.game.utils.GameUtils.POINTER_RADIUS;
+import static com.example.mmm.game.utils.GameUtils.distance;
+import static com.example.mmm.game.utils.GameUtils.getRandomSign;
+import static com.example.mmm.game.utils.GameUtils.getRandomSignProbability;
 
 public class CrossRotatingObstacle implements Obstacle {
 
     private float cx, cy, theta;
-    final static float obstacleThickness = 80.0f, orbitRadius = 300.0f, obstacleCenterRadius = 90.0f;
-    final static float HORIZONTAL_MOVE_RATE = 10.0f, THETA_RATE = (float) Math.PI / 45.0f;
+    public final static float obstacleThickness = 80.0f, orbitRadius = 300.0f, obstacleCenterRadius = 90.0f;
+    public final static float HORIZONTAL_MOVE_RATE = 10.0f, THETA_RATE = (float) Math.PI / 45.0f;
     private boolean isAlive, isMovingRight, isClockwise, hasDoubleLines, isTranslating;
     private boolean isInvisible = false;
     // hasDoubleLines -> Whether or not the obstacle has double lines (cross shape) or not (Single line).
