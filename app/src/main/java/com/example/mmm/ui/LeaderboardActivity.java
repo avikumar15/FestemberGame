@@ -1,28 +1,34 @@
 package com.example.mmm.ui;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mmm.R;
-import com.example.mmm.viewmodel.LeaderboardViewModel;
+import com.example.mmm.model.User;
+import com.example.mmm.api.GameViewModel;
+
+import java.util.List;
 
 public class LeaderboardActivity extends AppCompatActivity {
+
+    List<User> users;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 
-        LeaderboardViewModel model = (new ViewModelProvider(this)).get(LeaderboardViewModel.class);
+        GameViewModel model = (new ViewModelProvider(this)).get(GameViewModel.class);
+
         model.getUsers().observe(this, users -> {
-            if(users.size()>0) {
-                Log.i("LeaderboardActivity", users.get(0).toString());
-            }
+            this.users = users;
         });
+
+        recyclerView = findViewById(R.id.rv);
 
     }
 }

@@ -8,4 +8,97 @@
     android:background="@drawable/start_screen_min"
     >
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontalConstraint20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/horizontalConstraint20"
+        android:text="REGISTRATION"
+        android:textColor="#000000"
+        android:textSize="26sp"
+        android:background="#EAEAEA"
+        >
+
+    </TextView>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/etName_Reg"
+        android:hint="Name"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/selector_edittext"
+        app:layout_constraintTop_toBottomOf="@id/horizontalConstraint20"
+        >
+    </EditText>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/etUserName_Reg"
+        android:hint="Username"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/selector_edittext"
+        app:layout_constraintTop_toBottomOf="@id/etName_Reg"
+        >
+    </EditText>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/etPassword_Reg"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/selector_edittext"
+        app:layout_constraintTop_toBottomOf="@id/etUserName_Reg"
+        >
+    </EditText>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/etEmail_Reg"
+        android:hint="Email"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/selector_edittext"
+        app:layout_constraintTop_toBottomOf="@id/etPassword_Reg"
+        >
+    </EditText>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_Register"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etEmail_Reg"
+        android:layout_marginTop="24dp"
+        android:text="Register"
+        android:background="@drawable/round_button"
+        >
+
+    </Button>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

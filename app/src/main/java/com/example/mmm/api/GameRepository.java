@@ -1,9 +1,8 @@
-package com.example.mmm.firebase;
+package com.example.mmm.api;
 
 import androidx.annotation.NonNull;
 
 import com.example.mmm.model.User;
-import com.example.mmm.viewmodel.onDataRetrieved;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,21 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Singleton Class
-public class LeaderboardRepository {
+public class GameRepository {
 
     public final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference("Users");
     public onDataRetrieved retrievedInterface;
 
-    private static LeaderboardRepository repository = null;
+    private static GameRepository repository = null;
 
-    private LeaderboardRepository(onDataRetrieved retrievedInterface) {
+    private GameRepository(onDataRetrieved retrievedInterface) {
         this.retrievedInterface = retrievedInterface;
     }
 
-    public static LeaderboardRepository getInstance(onDataRetrieved retrievedInterface) {
+    public static GameRepository getInstance(onDataRetrieved retrievedInterface) {
         if(repository==null)
-            repository = new LeaderboardRepository(retrievedInterface);
+            repository = new GameRepository(retrievedInterface);
 
         return repository;
     }
@@ -52,6 +51,10 @@ public class LeaderboardRepository {
 
             }
         });
+    }
+
+    public void addUser(List<User> user) {
+        ref.setValue(user);
     }
 
 }

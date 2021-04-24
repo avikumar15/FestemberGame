@@ -1,37 +1,44 @@
-package com.example.mmm.viewmodel;
+package com.example.mmm.api;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.mmm.firebase.LeaderboardRepository;
 import com.example.mmm.model.User;
 
 import java.util.List;
 
-public class LeaderboardViewModel extends ViewModel implements onDataRetrieved {
+public class GameViewModel extends ViewModel implements onDataRetrieved {
 
     private MutableLiveData<List<User>> users;
-    private LeaderboardRepository repository = LeaderboardRepository.getInstance(this);
+    private GameRepository repository = GameRepository.getInstance(this);
 
     public LiveData<List<User>> getUsers() {
         if (users == null) {
             users = new MutableLiveData<>();
-            loadArticles();
+            loadUsers();
         }
         return users;
     }
 
-    private void loadArticles() {
+    private void loadUsers() {
         repository.retrieveData();
     }
 
-    private void loadArticles(List<User> result) {
+    private void loadUsers(List<User> result) {
         users.setValue(result);
+    }
+
+    public void addUser(User user) {
+        List<User> us = users.getValue();
+        assert us != null;
+        us.add(user);
+        repository.addUser(us);
+        users.postValue(us);
     }
 
     @Override
     public void notifyDataRetrieved(List<User> result) {
-        loadArticles(result);
+        loadUsers(result);
     }
 }
