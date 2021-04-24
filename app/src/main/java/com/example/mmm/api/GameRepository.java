@@ -3,6 +3,7 @@ package com.example.mmm.api;
 import androidx.annotation.NonNull;
 
 import com.example.mmm.model.User;
+import com.example.mmm.viewmodel.onDataRetrieved;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +22,8 @@ public class GameRepository {
 
     private static GameRepository repository = null;
 
+    ValueEventListener eventListener;
+
     private GameRepository(onDataRetrieved retrievedInterface) {
         this.retrievedInterface = retrievedInterface;
     }
@@ -29,11 +32,7 @@ public class GameRepository {
         if(repository==null)
             repository = new GameRepository(retrievedInterface);
 
-        return repository;
-    }
-
-    public void retrieveData() {
-        ref.addValueEventListener(new ValueEventListener() {
+        repository.eventListener = (new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -51,6 +50,16 @@ public class GameRepository {
 
             }
         });
+
+        return repository;
+    }
+
+    public void retrieveData() {
+        ref.addValueEventListener(eventListener);
+    }
+
+    public void removeListener() {
+        ref.removeEventListener(eventListener);
     }
 
     public void addUser(List<User> user) {

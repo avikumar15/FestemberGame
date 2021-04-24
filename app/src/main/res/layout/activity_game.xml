@@ -9,4 +9,39 @@
     android:id="@+id/GameBackground"
     >
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_gravity="center"
+        android:background="#000000"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:id="@+id/tvHelpText"
+        android:text="WELCOME!!!\nSWIPE TO GET GOING"
+        >
+
+    </Button>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/logout"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnLogoutGame"
+        android:layout_gravity="end"
+        >
+    </Button>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ldicon"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btnLeaderGame"
+        >
+    </Button>
+
 </FrameLayout>

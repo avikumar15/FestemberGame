@@ -3,7 +3,9 @@ package com.example.mmm.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Bundle;
@@ -16,6 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.mmm.R;
+import com.example.mmm.Utils;
+
+import static com.example.mmm.Utils.SP_KEY;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -27,10 +32,16 @@ public class SplashActivity extends AppCompatActivity {
     Float screenHeight, screenWidth;
     int animationDuration = 1500;
 
+    SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        sharedPref = getSharedPreferences(
+                SP_KEY, Context.MODE_PRIVATE);
+
         initViewsAndVars();
         Log.i("SplashActivity", "Height and width: "+screenHeight+", "+screenWidth);
         setHandler();
@@ -69,6 +80,13 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
+
+                if("".equals(sharedPref.getString(Utils.USER_KEY,""))) {
+                    intent = new Intent(SplashActivity.this, LoginActivity.class);
+                } else {
+                    intent = new Intent(SplashActivity.this, GameActivity.class);
+                }
+
                 startActivity(intent);
                 overridePendingTransition(0,0);
                 finish();

@@ -1,9 +1,10 @@
-package com.example.mmm.api;
+package com.example.mmm.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.mmm.api.GameRepository;
 import com.example.mmm.model.User;
 
 import java.util.List;
@@ -40,5 +41,11 @@ public class GameViewModel extends ViewModel implements onDataRetrieved {
     @Override
     public void notifyDataRetrieved(List<User> result) {
         loadUsers(result);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        repository.removeListener();
     }
 }

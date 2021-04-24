@@ -1,4 +1,4 @@
-package com.example.mmm.api;
+package com.example.mmm.viewmodel;
 
 import com.example.mmm.model.User;
 

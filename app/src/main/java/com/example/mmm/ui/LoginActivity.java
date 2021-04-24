@@ -2,18 +2,32 @@ package com.example.mmm.ui;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mmm.R;
+import com.example.mmm.Utils;
+import com.example.mmm.viewmodel.GameViewModel;
+import com.example.mmm.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.mmm.Utils.SP_KEY;
+import static com.example.mmm.Utils.USER_KEY;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,16 +42,34 @@ public class LoginActivity extends AppCompatActivity {
     Intent intent;
     Button btnLogin;
 
+    EditText etUsername;
+    EditText etPass;
+
+    GameViewModel model;
+    List<User> userList = new ArrayList<>();
+
+    SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        sharedPref = getSharedPreferences(
+                SP_KEY, Context.MODE_PRIVATE);
 
         bindViews();
         animateCl();
         Log.i("LoginActivity", "Height and width: "+screenHeight+", "+screenWidth);
 
         setListeners();
+
+        model = (new ViewModelProvider(this)).get(GameViewModel.class);
+
+        model.getUsers().observe(this, u -> {
+            userList = u;
+        });
+
     }
 
     private void setListeners() {
@@ -71,9 +103,39 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login() {
         intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
-        overridePendingTransition(0,0);
-        finish();
+
+        String uname = etUsername.getText().toString();
+        String pass = etPass.getText().toString();
+
+        if(uname.equals("") || pass.equals("")) {
+            Toast.makeText(this, "Field can't be empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String passSHA = "";
+
+        for(int i = 0; i<userList.size(); i++) {
+            if(uname.equals(userList.get(i).Username)) {
+                passSHA = userList.get(i).Password;
+                break;
+            }
+        }
+
+        if(Utils.sha256(pass).equals(passSHA)) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            editor.putString(USER_KEY,uname);
+            editor.apply();
+
+            startActivity(intent);
+            overridePendingTransition(0,0);
+            finish();
+        } else if(passSHA.equals("")) {
+            Toast.makeText(this, "User not found!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Username or Password wrong!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void animateCl() {
@@ -116,5 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         ivLeaderboard = findViewById(R.id.iv_lead);
         ivRegister = findViewById(R.id.iv_reg);
         btnLogin = findViewById(R.id.btn_login);
+        etUsername = findViewById(R.id.etUsername);
+        etPass = findViewById(R.id.etPassword);
     }
 }

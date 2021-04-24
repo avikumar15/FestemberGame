@@ -71,6 +71,8 @@ public class GamePlay extends View {
     private int hitObstacleIndex, hitX, hitY;
     private int transitionTime;
 
+    GameStatusInterface gameStatusInterface;
+
 
     /**
      * Sets paint for various objects.
@@ -81,6 +83,7 @@ public class GamePlay extends View {
     public GamePlay(Context context, float width, float height) {
         super(context);
 
+        this.gameStatusInterface = (GameStatusInterface) context;
         this.width = width;
         this.height = height;
 
@@ -124,6 +127,8 @@ public class GamePlay extends View {
             showGameOverScreen(canvas);
             textPaint.setTextSize(100);
         } else {
+            gameStatusInterface.onGameStarted();
+
             drawFrameRect(canvas);
 
             canvas.drawCircle(fingerX, fingerY, POINTER_RADIUS, brush);

@@ -1,7 +1,6 @@
 package com.example.mmm.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.mmm.R;
 import com.example.mmm.Utils;
 import com.example.mmm.model.User;
-import com.example.mmm.api.GameViewModel;
+import com.example.mmm.viewmodel.GameViewModel;
 
 import java.util.List;
 
@@ -31,12 +30,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         model = (new ViewModelProvider(this)).get(GameViewModel.class);
         users = model.getUsers().getValue();
-
-        model.getUsers().observe(this, users -> {
-            if(users.size()>0) {
-                Log.i("LeaderboardActivity", users.get(0).toString());
-            }
-        });
 
         btnRegister.setOnClickListener(view -> register());
     }
