@@ -9,7 +9,7 @@ import com.example.mmm.model.User;
 
 import java.util.List;
 
-public class GameViewModel extends ViewModel implements onDataRetrieved {
+public class GameViewModel extends ViewModel implements DataRetrievedInterface {
 
     private MutableLiveData<List<User>> users;
     private GameRepository repository = GameRepository.getInstance(this);

@@ -3,7 +3,7 @@ package com.example.mmm.api;
 import androidx.annotation.NonNull;
 
 import com.example.mmm.model.User;
-import com.example.mmm.viewmodel.onDataRetrieved;
+import com.example.mmm.viewmodel.DataRetrievedInterface;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,17 +18,17 @@ public class GameRepository {
 
     public final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference("Users");
-    public onDataRetrieved retrievedInterface;
+    public DataRetrievedInterface retrievedInterface;
 
     private static GameRepository repository = null;
 
     ValueEventListener eventListener;
 
-    private GameRepository(onDataRetrieved retrievedInterface) {
+    private GameRepository(DataRetrievedInterface retrievedInterface) {
         this.retrievedInterface = retrievedInterface;
     }
 
-    public static GameRepository getInstance(onDataRetrieved retrievedInterface) {
+    public static GameRepository getInstance(DataRetrievedInterface retrievedInterface) {
         if(repository==null)
             repository = new GameRepository(retrievedInterface);
 
