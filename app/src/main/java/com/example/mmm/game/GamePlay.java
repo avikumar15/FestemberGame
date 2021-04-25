@@ -256,6 +256,7 @@ public class GamePlay extends View {
 
     private void showGameOverScreen(Canvas canvas) {
         canvas.drawBitmap(gameOverScreenResized, 0, 0, paint);
+        gameStatusInterface.onGameEnded((long) game.getScoreInt());
     }
 
     /**

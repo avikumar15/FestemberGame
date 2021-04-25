@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.example.mmm.Utils.SP_KEY;
 import static com.example.mmm.Utils.USER_KEY;
+import static com.example.mmm.Utils.USER_SCORE;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -113,10 +114,12 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         String passSHA = "";
+        Long score=0L;
 
         for(int i = 0; i<userList.size(); i++) {
             if(uname.equals(userList.get(i).Username)) {
                 passSHA = userList.get(i).Password;
+                score = userList.get(i).Score;
                 break;
             }
         }
@@ -125,6 +128,8 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
 
             editor.putString(USER_KEY,uname);
+            editor.putLong(USER_SCORE,score);
+
             editor.apply();
 
             startActivity(intent);

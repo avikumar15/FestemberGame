@@ -16,9 +16,11 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mmm.R;
 import com.example.mmm.Utils;
+import com.example.mmm.viewmodel.GameViewModel;
 
 import static com.example.mmm.Utils.SP_KEY;
 
@@ -34,6 +36,10 @@ public class SplashActivity extends AppCompatActivity {
 
     SharedPreferences sharedPref;
 
+    GameViewModel model;
+    Boolean isDataReady = false;
+    Boolean isAnimationDone = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +47,17 @@ public class SplashActivity extends AppCompatActivity {
 
         sharedPref = getSharedPreferences(
                 SP_KEY, Context.MODE_PRIVATE);
+
+        model = (new ViewModelProvider(this)).get(GameViewModel.class);
+
+        model.getUsers().observe(this, u -> {
+            isDataReady = true;
+            if(isAnimationDone) {
+                startActivity(intent);
+                overridePendingTransition(0,0);
+                finish();
+            }
+        });
 
         initViewsAndVars();
         Log.i("SplashActivity", "Height and width: "+screenHeight+", "+screenWidth);
@@ -87,9 +104,14 @@ public class SplashActivity extends AppCompatActivity {
                     intent = new Intent(SplashActivity.this, GameActivity.class);
                 }
 
-                startActivity(intent);
-                overridePendingTransition(0,0);
-                finish();
+                isAnimationDone=true;
+
+                if(isDataReady) {
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                    finish();
+                }
+
             }
 
             @Override

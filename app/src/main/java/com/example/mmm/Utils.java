@@ -6,6 +6,8 @@ public class Utils {
 
     public static String SP_KEY = "SP_KEY";
     public static String USER_KEY = "USER_KEY";
+    public static String USER_SCORE = "USER_SCORE";
+
     // password encrypted
     public static String sha256(String base) {
         try{

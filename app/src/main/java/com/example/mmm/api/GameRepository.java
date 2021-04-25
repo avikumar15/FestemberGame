@@ -66,4 +66,25 @@ public class GameRepository {
         ref.setValue(user);
     }
 
+    public void updateScore(String userName, Long score) {
+        ValueEventListener temp = (new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot snapshot1:snapshot.getChildren()) {
+                    User u = snapshot1.getValue(User.class);
+                    if(u.Username.equals(userName)) {
+                        u.Score = score;
+                    }
+                    ref.child(snapshot1.getKey()).setValue(u);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        ref.addListenerForSingleValueEvent(temp);
+    }
+
 }

@@ -10,13 +10,17 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mmm.game.GameStatusInterface;
 import com.example.mmm.Utils;
 import com.example.mmm.game.GamePlay;
 import com.example.mmm.R;
+import com.example.mmm.viewmodel.GameViewModel;
 
 import static com.example.mmm.Utils.SP_KEY;
+import static com.example.mmm.Utils.USER_KEY;
+import static com.example.mmm.Utils.USER_SCORE;
 
 public class GameActivity extends AppCompatActivity implements GameStatusInterface {
 
@@ -35,11 +39,20 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
 
     SharedPreferences sharedPref;
 
+    String userName="";
+
+    Long current= 0L;
+    GameViewModel model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_game);
+
+        sharedPref = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE);
+        userName = sharedPref.getString(Utils.USER_KEY, "");
+        current = sharedPref.getLong(Utils.USER_SCORE, 0L);
 
         gamePlay = new GamePlay(this, screenWidth, screenHeight);
 
@@ -49,7 +62,7 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
         btnLogOut = findViewById(R.id.btnLogoutGame);
         tv = findViewById(R.id.tvHelpText);
 
-        sharedPref = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE);
+        model = (new ViewModelProvider(this)).get(GameViewModel.class);
 
         frameLayout.addView(gamePlay);
 
@@ -62,6 +75,14 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
             finish();
             overridePendingTransition(0,0);
         });
+
+        btnLeader.setOnClickListener(view -> {
+            Intent intent = new Intent(this, LeaderboardActivity.class);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(0,0);
+        });
+
     }
 
     @Override
@@ -72,8 +93,16 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
     }
 
     @Override
-    public void onNewGame() {
-        tv.setVisibility(View.VISIBLE);
+    public void onGameEnded(Long score) {
+        model.updateScore(userName, current + score);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putLong(USER_SCORE,score+current);
+
+        editor.apply();
+
+
     }
 
 }

@@ -43,6 +43,7 @@ public class LeaderboardActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             Toast.makeText(this, "Added new user!", Toast.LENGTH_SHORT).show();
         });
+        
 
     }
 }

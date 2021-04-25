@@ -48,4 +48,8 @@ public class GameViewModel extends ViewModel implements onDataRetrieved {
         super.onCleared();
         repository.removeListener();
     }
+
+    public void updateScore(String userName, Long score) {
+        repository.updateScore(userName, score);
+    }
 }
