@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-                startActivity(intent);
+                model.removeListener(); startActivity(intent);
                 overridePendingTransition(0,0);
             }
         });
@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 intent = new Intent(LoginActivity.this, LeaderboardActivity.class);
-                startActivity(intent);
+                model.removeListener(); startActivity(intent);
                 overridePendingTransition(0,0);
             }
         });
@@ -132,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
             editor.apply();
 
+            model.removeListener();
             startActivity(intent);
             overridePendingTransition(0,0);
             finish();

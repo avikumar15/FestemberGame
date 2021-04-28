@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -52,7 +53,9 @@ public class SplashActivity extends AppCompatActivity {
 
         model.getUsers().observe(this, u -> {
             isDataReady = true;
+            Toast.makeText(SplashActivity.this, u.size()+"", Toast.LENGTH_SHORT).show();
             if(isAnimationDone) {
+                model.removeListener();
                 startActivity(intent);
                 overridePendingTransition(0,0);
                 finish();
@@ -107,9 +110,12 @@ public class SplashActivity extends AppCompatActivity {
                 isAnimationDone=true;
 
                 if(isDataReady) {
+                    model.removeListener();
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     finish();
+                } else {
+                    Toast.makeText(SplashActivity.this, "Internet slow!", Toast.LENGTH_SHORT).show();
                 }
 
             }

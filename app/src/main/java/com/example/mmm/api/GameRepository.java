@@ -1,8 +1,13 @@
 package com.example.mmm.api;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import com.example.mmm.model.User;
+import com.example.mmm.ui.LeaderboardActivity;
 import com.example.mmm.viewmodel.DataRetrievedInterface;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +37,8 @@ public class GameRepository {
         if(repository==null)
             repository = new GameRepository(retrievedInterface);
 
+        Log.i("Listener", "Added!");
+
         repository.eventListener = (new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -47,7 +54,8 @@ public class GameRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText((Context) (new LeaderboardActivity()), "Database Error: "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Database Error", error.getMessage());
             }
         });
 
@@ -59,6 +67,7 @@ public class GameRepository {
     }
 
     public void removeListener() {
+        Log.i("Listener", "Removed!");
         ref.removeEventListener(eventListener);
     }
 

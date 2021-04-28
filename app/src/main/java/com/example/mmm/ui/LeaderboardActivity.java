@@ -1,7 +1,7 @@
 package com.example.mmm.ui;
 
 import android.os.Bundle;
-import android.widget.Toast;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -10,10 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mmm.R;
 import com.example.mmm.adapters.LeaderboardRecyclerAdapter;
-import com.example.mmm.viewmodel.GameViewModel;
 import com.example.mmm.model.User;
+import com.example.mmm.viewmodel.GameViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LeaderboardActivity extends AppCompatActivity {
@@ -35,15 +36,16 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         GameViewModel model = (new ViewModelProvider(this)).get(GameViewModel.class);
 
-        model.getUsers().observe(this, u -> {
-
+        model.getUsers().observe(LeaderboardActivity.this, u -> {
             users.clear();
             users.addAll(u);
-
+            sort(users);
             adapter.notifyDataSetChanged();
-            Toast.makeText(this, "Added new user!", Toast.LENGTH_SHORT).show();
         });
-        
 
+    }
+
+    private void sort(List<User> users) {
+        Collections.sort(users, (user, t1) -> (int) (t1.Score - user.Score));
     }
 }

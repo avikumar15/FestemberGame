@@ -19,7 +19,6 @@ import com.example.mmm.R;
 import com.example.mmm.viewmodel.GameViewModel;
 
 import static com.example.mmm.Utils.SP_KEY;
-import static com.example.mmm.Utils.USER_KEY;
 import static com.example.mmm.Utils.USER_SCORE;
 
 public class GameActivity extends AppCompatActivity implements GameStatusInterface {
@@ -44,6 +43,8 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
     Long current= 0L;
     GameViewModel model;
 
+    boolean hasGameStarted=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +63,8 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
         btnLogOut = findViewById(R.id.btnLogoutGame);
         tv = findViewById(R.id.tvHelpText);
 
+        tv.setText("WELCOME "+userName+"!!!\nSWIPE TO GET GOING");
+
         model = (new ViewModelProvider(this)).get(GameViewModel.class);
 
         frameLayout.addView(gamePlay);
@@ -71,15 +74,14 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(Utils.USER_KEY, "");
             editor.apply();
-            startActivity(intent);
+            model.removeListener(); startActivity(intent);
             finish();
             overridePendingTransition(0,0);
         });
 
         btnLeader.setOnClickListener(view -> {
             Intent intent = new Intent(this, LeaderboardActivity.class);
-            startActivity(intent);
-            finish();
+            model.removeListener(); startActivity(intent);
             overridePendingTransition(0,0);
         });
 
@@ -87,9 +89,13 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
 
     @Override
     public void onGameStarted() {
-        tv.setVisibility(View.INVISIBLE);
-        btnLogOut.setVisibility(View.INVISIBLE);
-        btnLeader.setVisibility(View.INVISIBLE);
+        if(!hasGameStarted) {
+            tv.setVisibility(View.INVISIBLE);
+            btnLogOut.setVisibility(View.INVISIBLE);
+            btnLeader.setVisibility(View.INVISIBLE);
+            model.removeListener();
+            hasGameStarted = true;
+        }
     }
 
     @Override
