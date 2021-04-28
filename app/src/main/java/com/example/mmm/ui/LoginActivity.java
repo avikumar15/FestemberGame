@@ -73,6 +73,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void setListeners() {
 
         ivRegister.setOnClickListener(new View.OnClickListener() {
