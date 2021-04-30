@@ -41,7 +41,7 @@ public class Game {
     public float moveDownSpeed;
     public float frameRectSpeed;  // Change this to adjust moving speed of background. This is just for the background
     private boolean disableCollisions;
-    private float powerUpProbability = 0.04f; // Probability of getting a powerup randomly in the game.
+    private float powerUpProbability = 0.012f; // Probability of getting a powerup randomly in the game.
     private int maxPowerupsRate = 1;
     private int disableCollisionsTime = 0;
 

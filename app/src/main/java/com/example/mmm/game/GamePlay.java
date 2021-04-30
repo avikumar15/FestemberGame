@@ -93,7 +93,7 @@ public class GamePlay extends View {
             frameHeight = height;
         }
 
-        frameDrawable = ContextCompat.getDrawable(getContext(), R.drawable.tile2);
+        frameDrawable = ContextCompat.getDrawable(getContext(), R.drawable.game_background);
 
         brush.setStyle(Paint.Style.FILL_AND_STROKE);
 
@@ -108,8 +108,8 @@ public class GamePlay extends View {
         powerupBarStrokePaint.setStyle(Paint.Style.STROKE);
         powerupBarStrokePaint.setStrokeWidth(10.0f);
 
-        startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.start_screen_min);
-        gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_over_screen_min);
+        startScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_background);
+        gameOverScreen = BitmapFactory.decodeResource(getResources(), R.drawable.game_background);
 
         startScreenResized = Bitmap.createScaledBitmap(startScreen, (int) width, (int) height, false);
         gameOverScreenResized = Bitmap.createScaledBitmap(gameOverScreen, (int) width, (int) height, false);

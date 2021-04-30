@@ -53,7 +53,6 @@ public class SplashActivity extends AppCompatActivity {
 
         model.getUsers().observe(this, u -> {
             isDataReady = true;
-            Toast.makeText(SplashActivity.this, u.size()+"", Toast.LENGTH_SHORT).show();
             if(isAnimationDone) {
                 model.removeListener();
                 startActivity(intent);

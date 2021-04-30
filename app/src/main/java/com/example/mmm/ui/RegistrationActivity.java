@@ -2,7 +2,6 @@ package com.example.mmm.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -64,6 +63,7 @@ public class RegistrationActivity extends AppCompatActivity {
             Toast.makeText(this, "User already registered! Aborting...", Toast.LENGTH_SHORT).show();
         } else {
             model.addUser(new User(uname, email, Utils.sha256(pass), name, (long) 0));
+            Toast.makeText(this, "User Registered!", Toast.LENGTH_SHORT).show();
         }
     }
 

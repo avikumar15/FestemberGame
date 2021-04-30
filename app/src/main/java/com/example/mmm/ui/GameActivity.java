@@ -100,14 +100,14 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
 
     @Override
     public void onGameEnded(Long score) {
+
+        tv.setVisibility(View.VISIBLE);
+        tv.setText("GAME OVER!!\nTap to go back");
+
         model.updateScore(userName, current + score);
-
         SharedPreferences.Editor editor = sharedPref.edit();
-
         editor.putLong(USER_SCORE,score+current);
-
         editor.apply();
-
 
     }
 

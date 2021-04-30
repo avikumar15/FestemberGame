@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.LoginActivity"
-    android:background="@drawable/start_screen_min"
+    android:background="@drawable/game_background"
     >
 
     <ImageView
