@@ -10,12 +10,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mmm.game.GameStatusInterface;
+import com.example.mmm.NotificationService;
+import com.example.mmm.R;
 import com.example.mmm.Utils;
 import com.example.mmm.game.GamePlay;
-import com.example.mmm.R;
+import com.example.mmm.game.GameStatusInterface;
 import com.example.mmm.viewmodel.GameViewModel;
 
 import static com.example.mmm.Utils.SP_KEY;
@@ -104,10 +106,24 @@ public class GameActivity extends AppCompatActivity implements GameStatusInterfa
         tv.setVisibility(View.VISIBLE);
         tv.setText("GAME OVER!!\nTap to go back");
 
+        if(score>=10)
+            startService("Gg, your score is greater than 100!");
+        else
+            startService("Your score- "+score+" Better luck next time :)");
+
         model.updateScore(userName, current + score);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(USER_SCORE,score+current);
         editor.apply();
+
+    }
+
+    public void startService(String msg) {
+
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        serviceIntent.putExtra("INTENT_TEXT", msg);
+
+        ContextCompat.startForegroundService(this, serviceIntent);
 
     }
 

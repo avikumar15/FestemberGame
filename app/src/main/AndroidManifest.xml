@@ -2,14 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mmm">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/gameicon4"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/gameicon4"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.LeaderboardActivity"></activity>
+        <receiver android:name=".GameWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/game_widget_info" />
+        </receiver>
+
+        <activity android:name=".ui.LeaderboardActivity" />
         <activity android:name=".ui.RegistrationActivity" />
         <activity android:name=".ui.LoginActivity" />
         <activity android:name=".ui.SplashActivity">
@@ -20,6 +32,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.GameActivity" />
+
+        <service android:name=".NotificationService" />
     </application>
 
 </manifest>

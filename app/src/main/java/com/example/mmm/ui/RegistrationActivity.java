@@ -1,11 +1,13 @@
 package com.example.mmm.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -62,8 +64,19 @@ public class RegistrationActivity extends AppCompatActivity {
         if(isUserAlreadyReg) {
             Toast.makeText(this, "User already registered! Aborting...", Toast.LENGTH_SHORT).show();
         } else {
-            model.addUser(new User(uname, email, Utils.sha256(pass), name, (long) 0));
-            Toast.makeText(this, "User Registered!", Toast.LENGTH_SHORT).show();
+            AlertDialog alertDialog = new AlertDialog.Builder(RegistrationActivity.this).create();
+            alertDialog.setTitle("Registering");
+            alertDialog.setMessage("Are you sure details are right?");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "GO",
+                    (dialog, which) -> {
+                        model.addUser(new User(uname, email, Utils.sha256(pass), name, (long) 0));
+                        Toast.makeText(RegistrationActivity.this, "User Registered!", Toast.LENGTH_SHORT)
+                                .show();
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Wait",
+                    (dialog, i) -> dialog.dismiss());
+            alertDialog.show();
+
         }
     }
 
